@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LibManage.Common\LibManage.Common.csproj" />
+    <ProjectReference Include="..\LibManage.Data\LibManage.Data.csproj" />
+  </ItemGroup>
+
 </Project>

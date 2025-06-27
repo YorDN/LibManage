@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using LibManage.Web.Data;
+using LibManage.Data;
 
 namespace LibManage.Web;
 
