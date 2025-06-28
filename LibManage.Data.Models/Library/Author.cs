@@ -21,8 +21,14 @@ namespace LibManage.Data.Models.Library
         public required string Photo { get; set; }
 
         [Comment("The biography of the author")]
-        // This column contains when and where the author was born, what are some of their important works etc.
+        // This column contains some useful info about the author.
         public string? Biography { get; set; }
+
+        [Comment("Date of birth of the author (optional)")]
+        public DateTime? DateOfBirth { get; set; }
+
+        [Comment("Date of death of the author (optional)")]
+        public DateTime? DateOfDeath { get; set; }
 
         public ICollection<Book> WrittenBooks { get; set; } = new List<Book>();
 
