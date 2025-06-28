@@ -27,6 +27,7 @@ namespace LibManage.Data.Models.Library
         public Book Book { get; set; } = null!;
 
         [Required]
+        [Range(1, 5)]
         [Comment("The rating of the review")]
         public int Rating { get; set; }
 
