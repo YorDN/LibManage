@@ -4,10 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibManage.Data.Models.Library
 {
+    /// <summary>
+    ///     This is the Book model. It represents a single book in the library.
+    /// </summary>
     public class Book
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         [MaxLength(255)]
@@ -64,13 +67,13 @@ namespace LibManage.Data.Models.Library
         public required string Cover { get; set; }
 
         [Required]
-        public string AuthorId { get; set; } = null!;
+        public Guid AuthorId { get; set; }
         [Required]
         [ForeignKey(nameof(AuthorId))]
         public Author Author { get; set; } = null!;
 
         [Required]
-        public string PublisherId { get; set; } = null!;
+        public Guid PublisherId { get; set; } 
         [Required]
         [ForeignKey(nameof(PublisherId))]
         public Publisher Publisher { get; set; } = null!;
