@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 namespace LibManage.Data.Models.Library
 {
     /// <summary>
-    ///     This is the User model. It represents a user in the library. Inherits from the IdentityUser
+    ///     This is the User model. It represents a user in the library. Inherits from the IdentityUser<@Guid>
     /// </summary>
     public class User : IdentityUser<Guid>
     {
