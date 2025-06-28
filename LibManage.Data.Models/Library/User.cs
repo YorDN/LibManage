@@ -27,6 +27,9 @@ namespace LibManage.Data.Models.Library
         [Comment("When did the user last log in")]
         public DateTime LastLogin { get; set; }
 
+        [Comment("Is the user's account active")]
+        public bool IsActive { get; set; } = true;
+
         // A collection of the books taken by the user
         public ICollection<Borrow> Borrows { get; set; } = new List<Borrow>();
 
