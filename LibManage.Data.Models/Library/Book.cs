@@ -50,12 +50,14 @@ namespace LibManage.Data.Models.Library
             Audio
         }
         [Required]
+        [EnumDataType(typeof(BookType))]
         [Comment("The type of the book")]
         // The Type is required, because every book has a type
         // Default value is Physical, as most books are physical
         public BookType Type { get; set; } = BookType.Physical;
 
-        [Comment("The duration of the book")]
+        [Comment("The duration of the book (audio books)")]
+        // This only applies for the audio books.
         public TimeSpan? Duration { get; set; }
 
         [MaxLength(1000)]
@@ -67,6 +69,10 @@ namespace LibManage.Data.Models.Library
         // The cover is required because every book must have a cover
         // If a book does not have a cover, a default cover will be used
         public required string Cover { get; set; }
+
+
+        [Comment("When was the book uploaded")]
+        public DateTime UploadDate { get; set; } = DateTime.UtcNow;
 
         [Required]
         public Guid AuthorId { get; set; }
@@ -82,6 +88,7 @@ namespace LibManage.Data.Models.Library
 
         public ICollection<Borrow> Borrows { get; set; } = new List<Borrow>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<BookFile> Files { get; set; } = new List<BookFile>();
 
     }
 }
