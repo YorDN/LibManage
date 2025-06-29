@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using LibManage.Data;
+using LibManage.Data.Models.Library;
 
 namespace LibManage.Web;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +17,18 @@ public class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+        builder.Services.AddDefaultIdentity<User>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = false;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireDigit = true;
+            options.Password.RequiredLength = 8;
+        })
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
+
         builder.Services.AddControllersWithViews();
 
         var app = builder.Build();
@@ -45,7 +56,23 @@ public class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();
-
+        using (var scope = app.Services.CreateScope())
+        {
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            var roles = new[]
+            {
+                "Admin",
+                "Manager",
+                "Member"
+            };
+            foreach (var role in roles)
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+                }
+            }
+        }
         app.Run();
     }
 }

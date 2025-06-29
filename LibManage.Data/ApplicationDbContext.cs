@@ -1,15 +1,25 @@
-﻿using LibManage.Data.Models.Library;
+﻿
+using LibManage.Data.Models.Library;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibManage.Data;
 
-public class ApplicationDbContext : IdentityDbContext
+public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }
+    public DbSet<Book> Books { get; set; } = null!;
+    public DbSet<Author> Authors { get; set; } = null!;
+    public DbSet<BookFile> BooksFiles { get; set; } = null!;
+    public DbSet<Borrow> Borrows { get; set; } = null!;
+    public DbSet<Publisher> Publishers { get; set; } = null!;
+    public DbSet<Review> Reviews { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
