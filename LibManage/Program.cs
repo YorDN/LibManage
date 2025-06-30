@@ -24,10 +24,10 @@ public class Program
             options.Password.RequireDigit = true;
             options.Password.RequiredLength = 8;
         })
-            .AddRoles<IdentityRole<Guid>>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddSignInManager()
-            .AddDefaultTokenProviders();
+        .AddRoles<IdentityRole<Guid>>()
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
+
 
         builder.Services.AddControllersWithViews();
 
