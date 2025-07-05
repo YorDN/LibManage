@@ -1,0 +1,16 @@
+﻿.bookBox {
+    transition: 0.15s;
+}
+
+.bookBox:hover {
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.bookLink {
+    text-decoration: none;
+    color: black;
+}
+
+.bookLink:hover {
+    color: black;
+}

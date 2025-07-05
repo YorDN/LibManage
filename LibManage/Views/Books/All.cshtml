@@ -1,0 +1,91 @@
+﻿@using Microsoft.AspNetCore.Html
+@model IEnumerable<AllBooksViewModel>
+
+@{
+    ViewData["Title"] = "All books";
+    Func<int, IHtmlContent> RenderStars = rating =>
+    {
+        var stars = new HtmlContentBuilder();
+        for (int i = 1; i <= 5; i++)
+        {
+            if (i <= rating)
+                stars.AppendHtml("<i class='bi bi-star-fill text-warning'></i>");
+            else
+                stars.AppendHtml("<i class='bi bi-star text-warning'></i>");
+        }
+        return stars;
+    };
+}
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        📚 No books available in the library.
+    </div>
+}
+
+
+<div class="container py-4">
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-4 ">
+        @foreach (var book in Model)
+        {
+            <div class="col">
+                <div style="display: flex; justify-content: center; text-align: center">
+                    <a href="@Url.Action("Details", "Books", new { id = book.Id })" class="bookLink">
+                        <div class="rounded p-3 bg-white bookBox" style="width: 250px;">
+                            <div style="display: flex; justify-content: center;">
+                                <img src="@book.Cover"
+                                     alt="@book.Title"
+                                     class="img-fluid mb-2"
+                                     style="object-fit: cover; height: 200px;" />
+                            </div>
+                            <div class="my-1">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= book.Rating)
+                                    {
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-star text-warning"></i>
+                                    }
+                                }
+                            </div>
+                            <small class="text-muted d-block">Author: @book.AuthorName</small>
+
+                            <strong class="d-block" title="@book.Title"
+                                    style="
+                                    display: -webkit-box;
+                                    -webkit-line-clamp: 2;
+                                    -webkit-box-orient: vertical;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    height: 2.8em;
+                                    line-height: 1.4em;
+                                    ">
+                                @book.Title
+                            </strong>
+
+
+
+                            <em class="text-muted small">(@book.BookType)</em>
+
+                            
+
+                            @if (book.IsTaken)
+                            {
+                                <div class="text-danger fw-bold small">Taken</div>
+                            }
+                            else
+                            {
+                                <div class="text-success fw-bold small">Available</div>
+                            }
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
