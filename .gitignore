@@ -98,6 +98,9 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+# Google API keys
+wwwroot/keys/google-drive-creds.json
+
 # Chutzpah Test files
 _Chutzpah*
 
@@ -361,3 +364,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/LibManage/wwwroot/keys/google-drive-creds.json
