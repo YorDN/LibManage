@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using LibManage.Data;
 using LibManage.Data.Models.Library;
+using LibManage.Services.Core.Contracts;
+using LibManage.Services.Core;
 
 namespace LibManage.Web;
 
@@ -16,6 +18,8 @@ public class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+        builder.Services.AddScoped<IBookService, BookService>();
+        builder.Services.AddScoped<IRatingService, RatingService>();
 
         builder.Services.AddDefaultIdentity<User>(options =>
         {

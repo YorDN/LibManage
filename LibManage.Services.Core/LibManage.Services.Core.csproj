@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LibManage.Common\LibManage.Common.csproj" />
     <ProjectReference Include="..\LibManage.Data\LibManage.Data.csproj" />
+    <ProjectReference Include="..\LibManage.ViewModels\LibManage.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>
