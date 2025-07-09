@@ -19,6 +19,7 @@ namespace LibManage.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Add()
         {
+            ViewBag.Types = Enum.GetNames(typeof(Book.BookType));
             return View();
         }
     }

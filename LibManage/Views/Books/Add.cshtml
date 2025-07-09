@@ -1,4 +1,105 @@
 ﻿@model AddBookInputModel
-@{
 
+@{
+    ViewData["Title"] = "Add New Book";
+}
+
+<h1 class="mb-4">Add New Book</h1>
+
+<form asp-action="Add" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" placeholder="Write the title"/>
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ISBN" class="form-label"></label>
+        <input asp-for="ISBN" class="form-control" placeholder="E.G. 978-3-16-148410-0" />
+        <span asp-validation-for="ISBN" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Language" class="form-label"></label>
+        <input asp-for="Language" class="form-control" placeholder="E.G. English" />
+        <span asp-validation-for="Language" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Type" class="form-label"></label>
+        <select asp-for="Type" class="form-select" asp-items="new SelectList(ViewBag.Types)">
+            <option disabled selected value="">Select book type</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CoverFile" class="form-label">Cover Image</label>
+        <input asp-for="CoverFile" class="form-control" type="file" accept="image/*" />
+        <span asp-validation-for="CoverFile" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3" id="bookFileInput" style="display: none;">
+        <label for="bookFile" class="form-label">Book File</label>
+        <input type="file" name="BookFile" id="bookFile" class="form-control"/>
+    </div>
+
+    <div class="mb-3" id="durationInput" style="display: none;">
+        <label asp-for="Duration" class="form-label"></label>
+        <input asp-for="Duration" class="form-control" placeholder="hh:mm:ss" />
+        <span asp-validation-for="Duration" class="text-danger"></span>
+    </div>
+
+    <!-- Optional fields -->
+    <div class="mb-3">
+        <label asp-for="ReleaseDate" class="form-label"></label>
+        <input asp-for="ReleaseDate" class="form-control" type="date" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Edition" class="form-label"></label>
+        <input asp-for="Edition" class="form-control" placeholder="E.G. Special Edition or First (with words)" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Genre" class="form-label"></label>
+        <input asp-for="Genre" class="form-control" placeholder="E.G. Romance"/>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" placeholder="Tell us about the book"></textarea>
+    </div>
+
+    <!-- TO-DO Add author and publisher selection -->
+
+    <button type="submit" class="btn btn-primary">Add Book</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const typeDropdown = document.getElementById("Type");
+        const fileInputDiv = document.getElementById("bookFileInput");
+        const durationDiv = document.getElementById("durationInput");
+        const bookFileInput = document.getElementById("bookFile");
+
+        function toggleConditionalInputs() {
+            const selectedType = typeDropdown.value;
+
+            fileInputDiv.style.display = (selectedType === "Digital" || selectedType === "Audio")
+                ? "block" : "none";
+
+            if (selectedType === 'Digital'){
+                bookFileInput.accept = '.epub';
+            } else if (selectedType == 'Audio'){
+                bookFileInput.accept = '.mp3'
+            }
+            durationDiv.style.display = (selectedType === "Audio") ? "block" : "none";
+        }
+
+        document.addEventListener("DOMContentLoaded", toggleConditionalInputs);
+
+        typeDropdown.addEventListener("change", toggleConditionalInputs);
+    </script>
 }
