@@ -38,6 +38,8 @@ namespace LibManage.ViewModels
         [Required]
         public IFormFile CoverFile { get; set; }
 
+        public IFormFile? BookFile { get; set; }
+
         [Required]
         public Guid AuthorId { get; set; }
 

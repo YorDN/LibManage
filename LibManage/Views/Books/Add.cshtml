@@ -40,8 +40,8 @@
     </div>
 
     <div class="mb-3" id="bookFileInput" style="display: none;">
-        <label for="bookFile" class="form-label">Book File</label>
-        <input type="file" name="BookFile" id="bookFile" class="form-control"/>
+        <label asp-for="BookFile" class="form-label">Book File</label>
+        <input asp-for="BookFile" type="file" name="BookFile" id="bookFile" class="form-control"/>
     </div>
 
     <div class="mb-3" id="durationInput" style="display: none;">
@@ -50,7 +50,6 @@
         <span asp-validation-for="Duration" class="text-danger"></span>
     </div>
 
-    <!-- Optional fields -->
     <div class="mb-3">
         <label asp-for="ReleaseDate" class="form-label"></label>
         <input asp-for="ReleaseDate" class="form-control" type="date" />

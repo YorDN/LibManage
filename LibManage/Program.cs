@@ -20,6 +20,7 @@ public class Program
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddScoped<IBookService, BookService>();
         builder.Services.AddScoped<IRatingService, RatingService>();
+        builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService>();
 
         builder.Services.AddDefaultIdentity<User>(options =>
         {

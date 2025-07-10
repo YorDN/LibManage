@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.70.0.3834" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LibManage.Common\LibManage.Common.csproj" />
     <ProjectReference Include="..\LibManage.Data\LibManage.Data.csproj" />
     <ProjectReference Include="..\LibManage.ViewModels\LibManage.ViewModels.csproj" />
