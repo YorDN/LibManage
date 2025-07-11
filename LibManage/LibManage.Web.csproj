@@ -27,8 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Authors\" />
     <Folder Include="Views\Publishers\" />
+    <Folder Include="wwwroot\uploads\covers\" />
+    <Folder Include="wwwroot\uploads\files\digital\" />
+    <Folder Include="wwwroot\uploads\files\audio\" />
+    <Folder Include="wwwroot\uploads\pfps\publisher\" />
+    <Folder Include="wwwroot\uploads\pfps\user\" />
   </ItemGroup>
 
 </Project>

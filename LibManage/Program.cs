@@ -21,6 +21,8 @@ public class Program
         builder.Services.AddScoped<IBookService, BookService>();
         builder.Services.AddScoped<IRatingService, RatingService>();
         builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService>();
+        builder.Services.AddScoped<IAuthorService, AuthorService>();
+        builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
         builder.Services.AddDefaultIdentity<User>(options =>
         {

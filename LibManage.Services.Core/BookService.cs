@@ -9,6 +9,11 @@ namespace LibManage.Services.Core
     public class BookService(ApplicationDbContext context,
         IRatingService ratingService) : IBookService
     {
+        public Task<bool> CreateBookAsync(AddBookInputModel model)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<AllBooksViewModel>?> GetAllBooksAsync()
         {
             IEnumerable<AllBooksViewModel>? allBooksViewModel = await context.Books

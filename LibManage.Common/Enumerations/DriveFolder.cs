@@ -5,6 +5,7 @@ namespace LibManage.Common.Enumerations
     {
         Covers,
         DigitalBooks,
-        AudioBooks
+        AudioBooks,
+        ProfilePictures
     }
 }
