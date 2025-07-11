@@ -4,6 +4,7 @@ using LibManage.Data;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
 using LibManage.Services.Core;
+using LibManage.Common;
 
 namespace LibManage.Web;
 
@@ -51,6 +52,11 @@ public class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            await SeedRolesAsync(services);
+        }
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
@@ -65,4 +71,19 @@ public class Program
         app.MapRazorPages();
         app.Run();
     }
+    public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
+    {
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+        string[] roleNames = { UserRoles.Admin, UserRoles.Manager, UserRoles.User };
+
+        foreach (var role in roleNames)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+            }
+        }
+    }
+
 }
