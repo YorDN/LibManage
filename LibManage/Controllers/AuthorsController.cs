@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibManage.Web.Controllers
 {
-    public class AuthorsController(IAuthorService authorService) : Controller
+    public class AuthorsController(IAuthorService authorService) : BaseController
     {
         [HttpGet]
         public IActionResult Add()

@@ -1,10 +1,12 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using LibManage.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LibManage.Web.Controllers;
 
-public class HomeController : Controller
+[AllowAnonymous]
+public class HomeController : BaseController
 {
     private readonly ILogger<HomeController> _logger;
 
