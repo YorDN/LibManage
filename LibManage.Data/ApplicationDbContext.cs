@@ -7,7 +7,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibManage.Data;
 
-public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+public class ApplicationDbContext : IdentityDbContext<
+        User,
+        IdentityRole<Guid>,
+        Guid,
+        IdentityUserClaim<Guid>,
+        IdentityUserRole<Guid>,
+        IdentityUserLogin<Guid>,
+        IdentityRoleClaim<Guid>,
+        IdentityUserToken<Guid>>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

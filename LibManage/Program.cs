@@ -25,19 +25,21 @@ public class Program
         builder.Services.AddScoped<IAuthorService, AuthorService>();
         builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
-        builder.Services.AddDefaultIdentity<User>(options =>
+        builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
         {
             options.SignIn.RequireConfirmedAccount = false;
             options.Password.RequireNonAlphanumeric = false;
             options.Password.RequireDigit = true;
             options.Password.RequiredLength = 8;
         })
-        .AddRoles<IdentityRole<Guid>>()
-        .AddEntityFrameworkStores<ApplicationDbContext>()
-        .AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+
 
 
         builder.Services.AddControllersWithViews();
+        builder.Services.AddRazorPages();
 
         var app = builder.Build();
 
@@ -55,7 +57,7 @@ public class Program
         using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
-            await SeedRolesAsync(services);
+            await SeedRolesAndUsersAsync(services);
         }
 
         app.UseHttpsRedirection();
@@ -71,8 +73,9 @@ public class Program
         app.MapRazorPages();
         app.Run();
     }
-    public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
+    public static async Task SeedRolesAndUsersAsync(IServiceProvider serviceProvider)
     {
+        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
         string[] roleNames = { UserRoles.Admin, UserRoles.Manager, UserRoles.User };
@@ -84,6 +87,53 @@ public class Program
                 await roleManager.CreateAsync(new IdentityRole<Guid>(role));
             }
         }
+
+        string adminEmail = "admin@abv.bg";
+        if(await userManager.FindByEmailAsync(adminEmail) == null)
+        {
+            var admin = new User()
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true,
+                ProfilePicture = "/uploads/pfps/user/DefaultUser.png"
+            };
+            await userManager.CreateAsync(admin, "Admin123");
+            await userManager.AddToRoleAsync(admin, "Admin");
+
+        }
+
+        var managerEmail = "manager@abv.bg";
+        if (await userManager.FindByEmailAsync(managerEmail) == null)
+        {
+            var manager = new User
+            {
+                UserName = managerEmail,
+                Email = managerEmail,
+                EmailConfirmed = true,
+                ProfilePicture = "/uploads/pfps/user/DefaultUser.png"
+            };
+
+            await userManager.CreateAsync(manager, "Manager123");
+            await userManager.AddToRoleAsync(manager, "Manager");
+        }
+
+        var userEmail = "user@abv.bg";
+        if (await userManager.FindByEmailAsync(userEmail) == null)
+        {
+            var user = new User
+            {
+                UserName = userEmail,
+                Email = userEmail,
+                EmailConfirmed = true,
+                ProfilePicture = "/uploads/pfps/user/DefaultUser.png"
+            };
+
+            await userManager.CreateAsync(user, "User1234");
+            await userManager.AddToRoleAsync(user, "User");
+        }
+
     }
+
 
 }
