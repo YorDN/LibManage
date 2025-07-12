@@ -1,0 +1,97 @@
+﻿@using Newtonsoft.Json
+@model AddPublisherInputModel
+
+@{
+    ViewData["Title"] = "Add Publisher";
+}
+
+<h2>Add Publisher</h2>
+
+<form asp-action="Add" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LogoUrl" class="form-label"></label>
+        <input asp-for="LogoUrl" type="file" class="form-control" />
+        <span asp-validation-for="LogoUrl" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Website" class="form-label"></label>
+        <input asp-for="Website" class="form-control" />
+        <span asp-validation-for="Website" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Country" class="form-label"></label>
+        <select asp-for="Country" asp-items="(IEnumerable<SelectListItem>)ViewBag.Countries" class="form-control" id="country-select">
+            <option value="">Select a country</option>
+        </select>
+        <span asp-validation-for="Country" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Publisher</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <!-- Select2 JS (ensure it’s included) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            display: flex;
+            align-items: center;
+        }
+
+        .select2-results__option {
+            display: flex;
+            align-items: center;
+        }
+
+        .select2-results__option img,
+        .select2-selection__rendered img {
+            margin-right: 8px;
+            width: 20px;
+            height: 15px;
+            object-fit: cover;
+        }
+    </style>
+
+    <script>
+        const flagMap = @Html.Raw(JsonConvert.SerializeObject(ViewBag.CountryFlags));
+
+        function formatOption(option) {
+            if (!option.id || !flagMap[option.id]) return option.text;
+
+            const $img = $('<img>', {
+                src: flagMap[option.id],
+                alt: option.text
+            });
+
+            const $container = $('<span>').append($img).append(` ${option.text}`);
+            return $container;
+        }
+
+        $(document).ready(function () {
+            $('#country-select').select2({
+                templateResult: formatOption,
+                templateSelection: formatOption,
+                placeholder: "Select a country",
+                allowClear: true
+            });
+        });
+    </script>
+}

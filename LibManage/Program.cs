@@ -19,12 +19,14 @@ public class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
         builder.Services.AddScoped<IBookService, BookService>();
         builder.Services.AddScoped<IRatingService, RatingService>();
         builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService>();
         builder.Services.AddScoped<IAuthorService, AuthorService>();
         builder.Services.AddScoped<IFileUploadService, FileUploadService>();
-
+        builder.Services.AddScoped<ICountryService, CountryService>();
+        builder.Services.AddScoped<HttpClient>();
         builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
         {
             options.SignIn.RequireConfirmedAccount = false;

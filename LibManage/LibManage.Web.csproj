@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Publishers\" />
     <Folder Include="wwwroot\uploads\covers\" />
     <Folder Include="wwwroot\uploads\files\digital\" />
     <Folder Include="wwwroot\uploads\files\audio\" />
