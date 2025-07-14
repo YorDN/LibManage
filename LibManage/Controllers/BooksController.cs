@@ -52,6 +52,9 @@ namespace LibManage.Web.Controllers
             if (!ModelState.IsValid)
                 return this.RedirectToAction(nameof(Add));
 
+            //remove
+            return View(model);
+
         }
         private bool IsEpub(IFormFile file)
         {

@@ -88,7 +88,6 @@ namespace LibManage.Data.Models.Library
 
         public ICollection<Borrow> Borrows { get; set; } = new List<Borrow>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public ICollection<BookFile> Files { get; set; } = new List<BookFile>();
 
     }
 }

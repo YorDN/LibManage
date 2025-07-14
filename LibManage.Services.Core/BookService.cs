@@ -27,24 +27,21 @@ namespace LibManage.Services.Core
                 cover = await fileUploadService.UploadFileAsync(model.CoverFile, "covers");
             }
             Book book = new Book()
-           {
-               ISBN = model.ISBN,
-               Title = model.Title,
-               AuthorId = model.AuthorId,
-               PublisherId = model.PublisherId,
-               Description = model.Description,
-               Cover = cover,
-               Duration = model.Duration,
-               Genre = model.Genre,
-               Language = model.Language,
-               ReleaseDate = model.ReleaseDate,
-               UploadDate = DateTime.Now,
-               Edition = model.Edition,
-               Files = new BookFile[]
-               {
-
-               }
-           }
+            {
+                ISBN = model.ISBN,
+                Title = model.Title,
+                AuthorId = model.AuthorId,
+                PublisherId = model.PublisherId,
+                Description = model.Description,
+                Cover = cover,
+                Duration = model.Duration,
+                Genre = model.Genre,
+                Language = model.Language,
+                ReleaseDate = model.ReleaseDate,
+                UploadDate = DateTime.Now,
+                Edition = model.Edition
+            };
+            return true;
         }
 
         public async Task<IEnumerable<AllBooksViewModel>?> GetAllBooksAsync()

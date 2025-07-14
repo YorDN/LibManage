@@ -23,7 +23,6 @@ public class ApplicationDbContext : IdentityDbContext<
     }
     public DbSet<Book> Books { get; set; } = null!;
     public DbSet<Author> Authors { get; set; } = null!;
-    public DbSet<BookFile> BooksFiles { get; set; } = null!;
     public DbSet<Borrow> Borrows { get; set; } = null!;
     public DbSet<Publisher> Publishers { get; set; } = null!;
     public DbSet<Review> Reviews { get; set; } = null!;
