@@ -52,9 +52,10 @@ namespace LibManage.Web.Controllers
             if (!ModelState.IsValid)
                 return this.RedirectToAction(nameof(Add));
 
-            //remove
-            return View(model);
-
+            bool result = await bookService.CreateBookAsync(model);
+            if (!result)
+                return this.RedirectToAction(nameof(Add));
+            return this.RedirectToAction(nameof(All));
         }
         private bool IsEpub(IFormFile file)
         {

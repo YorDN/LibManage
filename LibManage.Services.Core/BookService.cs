@@ -4,6 +4,7 @@ using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using static LibManage.Data.Models.Library.Book;
 
 namespace LibManage.Services.Core
 {
@@ -18,7 +19,7 @@ namespace LibManage.Services.Core
             string cover;
 
 
-            if (model.CoverFile is null || model.CoverFile.Length == 0)
+            if (model.CoverFile == null || model.CoverFile.Length == 0)
             {
                 cover = "/uploads/covers/no_cover_available.png";
             }
@@ -26,21 +27,42 @@ namespace LibManage.Services.Core
             {
                 cover = await fileUploadService.UploadFileAsync(model.CoverFile, "covers");
             }
+            if (!Enum.TryParse<BookType>(model.Type, true, out BookType type))
+            {
+                return false;
+            }
             Book book = new Book()
             {
-                ISBN = model.ISBN,
+                Id = Guid.NewGuid(),
                 Title = model.Title,
+                ISBN = model.ISBN,
+                Language = model.Language,
+                Type = type,
+                ReleaseDate = model.ReleaseDate,
+                Edition = model.Edition,
+                Genre = model.Genre,
+                Description = model.Description,
+                Duration = model.Duration,
                 AuthorId = model.AuthorId,
                 PublisherId = model.PublisherId,
-                Description = model.Description,
+                UploadDate = DateTime.UtcNow,
                 Cover = cover,
-                Duration = model.Duration,
-                Genre = model.Genre,
-                Language = model.Language,
-                ReleaseDate = model.ReleaseDate,
-                UploadDate = DateTime.Now,
-                Edition = model.Edition
+
             };
+            if (model.BookFile != null)
+            {
+                string bookFileSubFolder = model.Type switch
+                {
+                    "Digital" => "files/digital",
+                    "Audio" => "files/audio",
+                    _ => "files"
+                };
+
+                string filePath = await fileUploadService.UploadFileAsync(model.BookFile, bookFileSubFolder);
+                book.BookFilePath = filePath;
+            }
+            await context.Books.AddAsync(book);
+            await context.SaveChangesAsync();
             return true;
         }
 

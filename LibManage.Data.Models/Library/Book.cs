@@ -42,6 +42,10 @@ namespace LibManage.Data.Models.Library
         [Comment("The genre of the book")]
         public string? Genre { get; set; }
 
+        [Comment("Where the file is located")]
+        public string? BookFilePath { get; set; }
+
+
         // Limitating the types of books to only three options: Physical, Digital and Audio
         public enum BookType
         {
