@@ -26,6 +26,8 @@ public class Program
         builder.Services.AddScoped<IAuthorService, AuthorService>();
         builder.Services.AddScoped<IFileUploadService, FileUploadService>();
         builder.Services.AddScoped<ICountryService, CountryService>();
+        builder.Services.AddScoped<IPublisherService, PublisherService>();
+
         builder.Services.AddScoped<HttpClient>();
         builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
         {
@@ -34,8 +36,9 @@ public class Program
             options.Password.RequireDigit = true;
             options.Password.RequiredLength = 8;
         })
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+                .AddDefaultUI()
+            .AddEntityFrameworkStores<ApplicationDbContext>();
+            //.AddDefaultTokenProviders();
 
 
 

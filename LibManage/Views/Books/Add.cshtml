@@ -2,103 +2,181 @@
 
 @{
     ViewData["Title"] = "Add New Book";
+    var noAuthors = !Model.Authors.Any();
+    var noPublishers = !Model.Publishers.Any();
+    var canAddBook = !noAuthors && !noPublishers;
 }
 
 <h1 class="mb-4">Add New Book</h1>
+@if (!canAddBook)
+{
+    <div class="alert alert-warning">
+        ⚠️ You must create at least one
+        @if (noAuthors && noPublishers)
+        {
+            <text>author and publisher</text>
+        }
+        else if (noAuthors)
+        {
+            <text>author</text>
+        }
+        else
+        {
+            <text>publisher</text>
+        }
+        before adding a book.
+        <br />
+        @if (noAuthors)
+        {
+            <a asp-controller="Author" asp-action="Add"> Add Author</a>
 
-<form asp-action="Add" method="post" enctype="multipart/form-data">
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
-        <input asp-for="Title" class="form-control" placeholder="Write the title"/>
-        <span asp-validation-for="Title" class="text-danger"></span>
+            <br />
+        }
+        @if (noPublishers)
+        {
+            <a asp-controller="Publisher" asp-action="Add"> Add Publisher</a>
+
+            <br />
+        }
     </div>
+}
+else
+{
+    <form asp-action="Add" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" placeholder="Write the title" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="ISBN" class="form-label"></label>
-        <input asp-for="ISBN" class="form-control" placeholder="E.G. 978-3-16-148410-0" />
-        <span asp-validation-for="ISBN" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="ISBN" class="form-label"></label>
+            <input asp-for="ISBN" class="form-control" placeholder="E.G. 978-3-16-148410-0" />
+            <span asp-validation-for="ISBN" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="Language" class="form-label"></label>
-        <input asp-for="Language" class="form-control" placeholder="E.G. English" />
-        <span asp-validation-for="Language" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="Language" class="form-label"></label>
+            <input asp-for="Language" class="form-control" placeholder="E.G. English" />
+            <span asp-validation-for="Language" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="Type" class="form-label"></label>
-        <select asp-for="Type" class="form-select" asp-items="new SelectList(ViewBag.Types)">
-            <option disabled selected value="">Select book type</option>
-        </select>
-        <span asp-validation-for="Type" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="Type" class="form-label"></label>
+            <select asp-for="Type" class="form-select" asp-items="new SelectList(ViewBag.Types)">
+                <option disabled selected value="">Select book type</option>
+            </select>
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="CoverFile" class="form-label">Cover Image</label>
-        <input asp-for="CoverFile" class="form-control" type="file" accept="image/*" />
-        <span asp-validation-for="CoverFile" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="CoverFile" class="form-label">Cover Image</label>
+            <input asp-for="CoverFile" class="form-control" type="file" accept="image/*" />
+            <span asp-validation-for="CoverFile" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3" id="bookFileInput" style="display: none;">
-        <label asp-for="BookFile" class="form-label">Book File</label>
-        <input asp-for="BookFile" type="file" name="BookFile" id="bookFile" class="form-control"/>
-    </div>
+        <div class="mb-3" id="bookFileInput" style="display: none;">
+            <label asp-for="BookFile" class="form-label">Book File</label>
+            <input asp-for="BookFile" type="file" name="BookFile" id="bookFile" class="form-control" />
+        </div>
 
-    <div class="mb-3" id="durationInput" style="display: none;">
-        <label asp-for="Duration" class="form-label"></label>
-        <input asp-for="Duration" class="form-control" placeholder="hh:mm:ss" />
-        <span asp-validation-for="Duration" class="text-danger"></span>
-    </div>
+        <div class="mb-3" id="durationInput" style="display: none;">
+            <label asp-for="Duration" class="form-label"></label>
+            <input asp-for="Duration" class="form-control" placeholder="hh:mm:ss" />
+            <span asp-validation-for="Duration" class="text-danger"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="ReleaseDate" class="form-label"></label>
-        <input asp-for="ReleaseDate" class="form-control" type="date" />
-    </div>
+        <div class="mb-3">
+            <label asp-for="ReleaseDate" class="form-label"></label>
+            <input asp-for="ReleaseDate" class="form-control" type="date" />
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="Edition" class="form-label"></label>
-        <input asp-for="Edition" class="form-control" placeholder="E.G. Special Edition or First (with words)" />
-    </div>
+        <div class="mb-3">
+            <label asp-for="Edition" class="form-label"></label>
+            <input asp-for="Edition" class="form-control" placeholder="E.G. Special Edition or First (with words)" />
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="Genre" class="form-label"></label>
-        <input asp-for="Genre" class="form-control" placeholder="E.G. Romance"/>
-    </div>
+        <div class="mb-3">
+            <label asp-for="Genre" class="form-label"></label>
+            <input asp-for="Genre" class="form-control" placeholder="E.G. Romance" />
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control" placeholder="Tell us about the book"></textarea>
-    </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" placeholder="Tell us about the book"></textarea>
+        </div>
 
-    <!-- TO-DO Add author and publisher selection -->
+        <div class="mb-3">
+            <label asp-for="AuthorId" class="form-label"></label>
+            <select asp-for="AuthorId" class="form-select select2" asp-items="@(new SelectList(Model.Authors, "Id", "Name"))">
+                <option disabled selected value="">Select an author</option>
+            </select>
+            <span asp-validation-for="AuthorId" class="text-danger"></span>
+           <div class="mt-2">
+                <a class="btn btn-outline-secondary" asp-controller="Authors" asp-action="Add">
+                    Add New Author
+                </a>
+           </div>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Add Book</button>
-</form>
+        <div class="mb-5">
+            <label asp-for="PublisherId" class="form-label"></label>
+            <select asp-for="PublisherId" class="form-select select2" asp-items="@(new SelectList(Model.Publishers, "Id", "Name"))">
+                <option disabled selected value="">Select a publisher</option>
+            </select>
+            <span asp-validation-for="PublisherId" class="text-danger"></span>
+            <div class="mt-2">
+                <a class="btn btn-outline-secondary" asp-controller="Publishers" asp-action="Add">
+                    Add New Publisher
+                </a>
+            </div>
+        </div>
 
+
+        <button type="submit" class="btn btn-primary">Add Book</button>
+    </form>
+
+}
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- jQuery (required by Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        const typeDropdown = document.getElementById("Type");
-        const fileInputDiv = document.getElementById("bookFileInput");
-        const durationDiv = document.getElementById("durationInput");
-        const bookFileInput = document.getElementById("bookFile");
+        $(document).ready(function () {
+            $('.select2').select2({
+                width: '100%',
+                placeholder: 'Search...',
+                allowClear: true
+            });
 
-        function toggleConditionalInputs() {
-            const selectedType = typeDropdown.value;
+            const typeDropdown = document.getElementById("Type");
+            const fileInputDiv = document.getElementById("bookFileInput");
+            const durationDiv = document.getElementById("durationInput");
+            const bookFileInput = document.getElementById("bookFile");
 
-            fileInputDiv.style.display = (selectedType === "Digital" || selectedType === "Audio")
-                ? "block" : "none";
+            function toggleConditionalInputs() {
+                const selectedType = typeDropdown.value;
 
-            if (selectedType === 'Digital'){
-                bookFileInput.accept = '.epub';
-            } else if (selectedType == 'Audio'){
-                bookFileInput.accept = '.mp3'
+                fileInputDiv.style.display = (selectedType === "Digital" || selectedType === "Audio")
+                    ? "block" : "none";
+
+                if (selectedType === 'Digital') {
+                    bookFileInput.accept = '.epub';
+                } else if (selectedType == 'Audio') {
+                    bookFileInput.accept = '.mp3';
+                }
+
+                durationDiv.style.display = (selectedType === "Audio") ? "block" : "none";
             }
-            durationDiv.style.display = (selectedType === "Audio") ? "block" : "none";
-        }
 
-        document.addEventListener("DOMContentLoaded", toggleConditionalInputs);
-
-        typeDropdown.addEventListener("change", toggleConditionalInputs);
+            toggleConditionalInputs();
+            typeDropdown.addEventListener("change", toggleConditionalInputs);
+        });
     </script>
 }
+

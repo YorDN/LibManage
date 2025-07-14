@@ -1,5 +1,8 @@
-﻿@using Microsoft.AspNetCore.Html
+﻿@using LibManage.Data.Models.Library
+@using Microsoft.AspNetCore.Html
+@using Microsoft.AspNetCore.Identity
 @model IEnumerable<AllBooksViewModel>
+
 
 @{
     ViewData["Title"] = "All books";
@@ -20,6 +23,11 @@
 {
     <div class="alert alert-info text-center">
         📚 No books available in the library.
+        <br />
+        @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
+        {
+            <a class="nav-link fw-bold" asp-area="" asp-controller="Books" asp-action="Add">Add a book</a>
+        }
     </div>
 }
 

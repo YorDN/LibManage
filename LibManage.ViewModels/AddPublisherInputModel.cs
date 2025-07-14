@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -13,9 +14,8 @@ namespace LibManage.ViewModels
         [Required]
         public required string Name { get; set; }
 
-        [Required]
         [DisplayName("Logo / Profile picture")]
-        public required string LogoUrl { get; set; }
+        public IFormFile? LogoFile { get; set; }
 
         [MaxLength(1000)]
         [DisplayName("Description")]

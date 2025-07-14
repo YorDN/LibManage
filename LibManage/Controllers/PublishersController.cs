@@ -1,11 +1,12 @@
 ﻿using LibManage.Services.Core.Contracts;
+using LibManage.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LibManage.Web.Controllers
 {
-    public class PublishersController (ICountryService countryService) : BaseController
+    public class PublishersController (ICountryService countryService, IPublisherService publisherService) : BaseController
     {
         [Authorize(Roles ="Admin, Manager")]
         [HttpGet]
@@ -29,6 +30,18 @@ namespace LibManage.Web.Controllers
 
             return View();
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> Add(AddPublisherInputModel model)
+        {
+            if (!ModelState.IsValid)
+                return this.RedirectToAction(nameof(Add));
+
+            bool result = await publisherService.AddPublisherAsync(model);
+            if (!result) 
+                return this.RedirectToAction(nameof(Add));
+
+            return this.RedirectToAction(nameof(Index), "Home");
         }
     }
 }

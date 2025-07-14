@@ -35,16 +35,17 @@ namespace LibManage.ViewModels
         [MaxLength(1000)]
         public string? Description { get; set; }
 
-        [Required]
-        public IFormFile CoverFile { get; set; }
+        public IFormFile? CoverFile { get; set; }
 
         public IFormFile? BookFile { get; set; }
 
         [Required]
         public Guid AuthorId { get; set; }
+        public List<AddBookAuthorViewModel> Authors { get; set; } = new List<AddBookAuthorViewModel>();
 
         [Required]
         public Guid PublisherId { get; set; }
+        public List<AddBookPublisherViewModel> Publishers { get; set; } = new List<AddBookPublisherViewModel>();
     }
 
 }
