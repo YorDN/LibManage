@@ -18,7 +18,6 @@ namespace LibManage.Services.Core
                 return false;
             string cover;
 
-
             if (model.CoverFile == null || model.CoverFile.Length == 0)
             {
                 cover = "/uploads/covers/no_cover_available.png";
@@ -26,6 +25,15 @@ namespace LibManage.Services.Core
             else
             {
                 cover = await fileUploadService.UploadFileAsync(model.CoverFile, "covers");
+            }
+
+            var author = await context.Authors
+            .Include(a => a.WrittenBooks)
+            .FirstOrDefaultAsync(a => a.Id == model.AuthorId);
+
+            if (author == null)
+            {
+                return false;
             }
             if (!Enum.TryParse<BookType>(model.Type, true, out BookType type))
             {
@@ -62,6 +70,7 @@ namespace LibManage.Services.Core
                 book.BookFilePath = filePath;
             }
             await context.Books.AddAsync(book);
+            author.WrittenBooks.Add(book);
             await context.SaveChangesAsync();
             return true;
         }
