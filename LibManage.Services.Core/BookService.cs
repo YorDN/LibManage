@@ -104,6 +104,26 @@ namespace LibManage.Services.Core
             return allBooksViewModel;
         }
 
+        public async Task<BookDetailsViewModel> GetBookDetailsAsync(Guid id)
+        {
+            var book = await context.Books
+            .Include(b => b.Author)
+            .Include(b => b.Publisher)
+            .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (book == null)
+                return null;
+
+            var isTaken = await context.Borrows.AnyAsync(r => r.BookId == id && r.DateDue == null);
+
+            return new BookDetailsViewModel
+            {
+                Book = book,
+                IsTaken = isTaken
+            };
+
+        }
+
         public async Task<AddBookInputModel> GetBookInputModelAsync()
         {
             AddBookInputModel model = new AddBookInputModel();

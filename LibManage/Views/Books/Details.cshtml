@@ -1,0 +1,78 @@
+﻿@model BookDetailsViewModel
+@using Microsoft.AspNetCore.Identity
+@using static LibManage.Data.Models.Library.Book
+
+@{
+    ViewData["Title"] = "Book Details";
+    var book = Model.Book;
+    var user = User;
+    bool isAdminOrManager = user.IsInRole("Admin") || user.IsInRole("Manager");
+}
+
+<div class="container mt-4">
+    <h2>@book.Title</h2>
+    <img src="@book.Cover" alt="Book cover" style="max-height: 300px;" />
+
+    <dl class="row mt-3">
+        <dt class="col-sm-3">Author</dt>
+        <dd class="col-sm-9">
+            <a asp-controller="Authors" asp-action="Details" asp-route-id="@book.AuthorId">
+                @book.Author.FullName
+            </a>
+        </dd>
+
+        <dt class="col-sm-3">Publisher</dt>
+        <dd class="col-sm-9">
+            <a asp-controller="Publishers" asp-action="Details" asp-route-id="@book.PublisherId">
+                @book.Publisher.Name
+            </a>
+        </dd>
+
+        <dt class="col-sm-3">ISBN</dt>
+        <dd class="col-sm-9">@book.ISBN</dd>
+
+        <dt class="col-sm-3">Type</dt>
+        <dd class="col-sm-9">@book.Type</dd>
+
+        <dt class="col-sm-3">Genre</dt>
+        <dd class="col-sm-9">@book.Genre</dd>
+
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@book.Description</dd>
+
+        @if (book.Type == BookType.Audio)
+        {
+            <dt class="col-sm-3">Duration</dt>
+            <dd class="col-sm-9">@book.Duration minutes</dd>
+        }
+    </dl>
+
+    <div class="mt-4">
+        @if (isAdminOrManager)
+        {
+            <a asp-action="Edit" asp-route-id="@book.Id" class="btn btn-primary">Edit</a>
+            <a asp-action="Delete" asp-route-id="@book.Id" class="btn btn-danger">Delete</a>
+        }
+
+        @if(User.Identity?.IsAuthenticated == true)
+        {
+            @if (!Model.IsTaken)
+            {
+                <form asp-action="Rent" asp-controller="Books" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@book.Id" />
+                    <button type="submit" class="btn btn-success">Rent</button>
+                </form>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Currently Taken</span>
+            }
+        }
+        else
+        {
+            <span class="badge bg-secondary">Log in or Sign up to rent a book!</span>
+        }
+
+        <a asp-action="All" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

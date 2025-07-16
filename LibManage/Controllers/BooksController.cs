@@ -57,6 +57,16 @@ namespace LibManage.Web.Controllers
                 return this.RedirectToAction(nameof(Add));
             return this.RedirectToAction(nameof(All));
         }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var model = await bookService.GetBookDetailsAsync(id);
+            if (model == null)
+                return NotFound();
+
+            return View(model);
+        }
         private bool IsEpub(IFormFile file)
         {
             var allowedExtensions = new[] { ".epub" };
