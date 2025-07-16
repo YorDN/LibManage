@@ -52,7 +52,7 @@
         @if (isAdminOrManager)
         {
             <a asp-action="Edit" asp-route-id="@book.Id" class="btn btn-primary">Edit</a>
-            <a asp-action="Delete" asp-route-id="@book.Id" class="btn btn-danger">Delete</a>
+            <a asp-action="DeleteConfirmation" asp-route-id="@book.Id" class="btn btn-danger">Delete</a>
         }
 
         @if(User.Identity?.IsAuthenticated == true)

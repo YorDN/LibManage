@@ -8,5 +8,6 @@ namespace LibManage.Services.Core.Contracts
         public Task<AddBookInputModel> GetBookInputModelAsync();
         public Task<bool> CreateBookAsync(AddBookInputModel model);
         public Task<BookDetailsViewModel> GetBookDetailsAsync(Guid id);
+        public Task<DeleteBookViewModel?> GetDeletedBookDetailsAsync(Guid id);
     }
 }

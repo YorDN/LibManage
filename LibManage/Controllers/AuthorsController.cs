@@ -29,7 +29,7 @@ namespace LibManage.Web.Controllers
             {
                 return this.RedirectToAction(nameof(Add));
             }
-            return this.RedirectToAction(nameof(Index), "Home"); ;
+            return this.RedirectToAction(nameof(All)); ;
         }
         [HttpGet]
         [AllowAnonymous]

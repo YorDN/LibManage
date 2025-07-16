@@ -143,5 +143,23 @@ namespace LibManage.Services.Core
                 .ToListAsync();
             return model;
         }
+
+        public async Task<DeleteBookViewModel?> GetDeletedBookDetailsAsync(Guid id)
+        {
+            if (!context.Books.Any(b => b.Id == id))
+                return null;
+            Book? book = await context.Books
+                .FirstOrDefaultAsync(b => b.Id == id);
+            if (book == null) return null;
+
+            DeleteBookViewModel model = new DeleteBookViewModel() 
+            { 
+                Id= book.Id,
+                Title = book.Title,
+                Cover = book.Cover,
+            };
+
+            return model;
+        }
     }
 }
