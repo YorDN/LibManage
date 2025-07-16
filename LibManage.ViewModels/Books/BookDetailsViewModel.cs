@@ -1,6 +1,6 @@
 ﻿using LibManage.Data.Models.Library;
 
-namespace LibManage.ViewModels
+namespace LibManage.ViewModels.Books
 {
     public class BookDetailsViewModel
     {

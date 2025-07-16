@@ -1,7 +1,7 @@
 ﻿using LibManage.Data.Models.Library;
 using LibManage.Services.Core;
 using LibManage.Services.Core.Contracts;
-using LibManage.ViewModels;
+using LibManage.ViewModels.Books;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

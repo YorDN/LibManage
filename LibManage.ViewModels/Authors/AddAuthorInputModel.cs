@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibManage.ViewModels
+namespace LibManage.ViewModels.Authors
 {
     public class AddAuthorInputModel
     {

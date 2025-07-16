@@ -2,7 +2,7 @@
 using LibManage.Data;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
-using LibManage.ViewModels;
+using LibManage.ViewModels.Books;
 using Microsoft.EntityFrameworkCore;
 using static LibManage.Data.Models.Library.Book;
 

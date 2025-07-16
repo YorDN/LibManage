@@ -1,0 +1,41 @@
+﻿@using LibManage.ViewModels.Authors
+@model IEnumerable<AllAuthorsViewModel>
+@{
+    ViewData["Title"] = "All Authors";
+}
+
+<h2 class="mb-4">Authors</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+         No authors available in the library.
+        <br />
+        @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
+        {
+            <a class="nav-link fw-bold" asp-area="" asp-controller="Authors" asp-action="Add">Add an author</a>
+        }
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach (var author in Model)
+        {
+            <div class="col">
+                <a asp-controller="Authors" asp-action="Details" asp-route-id="@author.Id"
+                   class="text-decoration-none text-dark">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@author.Photo"
+                             class="card-img-top"
+                             alt="@author.Name"
+                             style="object-fit: cover; height: 250px;" />
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@author.Name</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}

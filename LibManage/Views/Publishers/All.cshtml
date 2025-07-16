@@ -1,0 +1,41 @@
+﻿@using LibManage.ViewModels.Authors
+@model IEnumerable<AllPublishersViewModel>
+@{
+    ViewData["Title"] = "All Publishers";
+}
+
+<h2 class="mb-4">Publishers</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        No publishers available in the library.
+        <br />
+        @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
+        {
+            <a class="nav-link fw-bold" asp-area="" asp-controller="Publishers" asp-action="Add">Add a publisher</a>
+        }
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        @foreach (var publisher in Model)
+        {
+            <div class="col">
+                <a asp-controller="Authors" asp-action="Details" asp-route-id="@publisher.Id"
+                   class="text-decoration-none text-dark">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@publisher.Photo"
+                             class="card-img-top"
+                             alt="@publisher.Name"
+                             style="object-fit: cover; height: 250px;" />
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@publisher.Name</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}

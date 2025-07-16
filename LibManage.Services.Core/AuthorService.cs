@@ -2,7 +2,8 @@
 using LibManage.Data;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
-using LibManage.ViewModels;
+using LibManage.ViewModels.Authors;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibManage.Services.Core
 {
@@ -40,6 +41,21 @@ namespace LibManage.Services.Core
             await context.Authors.AddAsync(author);
             await context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<AllAuthorsViewModel>> GetAllAuthorsAsync()
+        {
+            IEnumerable<AllAuthorsViewModel> authors = await context.Authors
+                .OrderBy(a => a.WrittenBooks.Count())
+                .ThenBy(a => a.FullName)
+                .Select(a => new AllAuthorsViewModel()
+                {
+                    Id = a.Id,
+                    Name = a.FullName,
+                    Photo = a.Photo,
+                })
+                .ToListAsync();
+            return authors;
         }
     }
 }

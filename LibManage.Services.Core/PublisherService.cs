@@ -1,7 +1,8 @@
 ﻿using LibManage.Data;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
-using LibManage.ViewModels;
+using LibManage.ViewModels.Publishers;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibManage.Services.Core
 {
@@ -15,7 +16,7 @@ namespace LibManage.Services.Core
             string pfp;
             if (model.LogoFile is null || model.LogoFile.Length == 0)
             {
-                pfp = "/uploads/pfps/author/DefaultPublisher.png";
+                pfp = "/uploads/pfps/publisher/DefaultPublisher.png";
             }
             else
             {
@@ -34,6 +35,21 @@ namespace LibManage.Services.Core
             await context.Publishers.AddAsync(publisher);
             await context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<AllPublishersViewModel>> GetAllPublishersAsync()
+        {
+            IEnumerable<AllPublishersViewModel> publishers = await context.Publishers
+                .OrderBy(p => p.Books.Count)
+                .ThenBy(p => p.Name)
+                .Select(p => new AllPublishersViewModel()
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Photo = p.LogoUrl,
+                })
+                .ToListAsync();
+            return publishers;
         }
     }
 }

@@ -1,8 +1,7 @@
-﻿
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
-namespace LibManage.ViewModels
+namespace LibManage.ViewModels.Books
 {
     public class AddBookInputModel
     {

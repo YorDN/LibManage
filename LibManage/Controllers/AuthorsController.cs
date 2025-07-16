@@ -1,11 +1,17 @@
 ﻿using LibManage.Services.Core.Contracts;
-using LibManage.ViewModels;
+using LibManage.ViewModels.Authors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibManage.Web.Controllers
 {
     public class AuthorsController(IAuthorService authorService) : BaseController
     {
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return this.RedirectToAction(nameof(All));
+        }
         [HttpGet]
         public IActionResult Add()
         {
@@ -24,6 +30,15 @@ namespace LibManage.Web.Controllers
                 return this.RedirectToAction(nameof(Add));
             }
             return this.RedirectToAction(nameof(Index), "Home"); ;
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> All()
+        {
+            IEnumerable<AllAuthorsViewModel> model = await authorService
+                .GetAllAuthorsAsync();
+
+            return View(model);
         }
     }
 }

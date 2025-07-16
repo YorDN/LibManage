@@ -1,4 +1,4 @@
-﻿namespace LibManage.ViewModels
+﻿namespace LibManage.ViewModels.Books
 {
     public class AddBookAuthorViewModel
     {

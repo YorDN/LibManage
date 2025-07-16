@@ -1,5 +1,4 @@
-﻿
-using LibManage.ViewModels;
+﻿using LibManage.ViewModels.Books;
 
 namespace LibManage.Services.Core.Contracts
 {
