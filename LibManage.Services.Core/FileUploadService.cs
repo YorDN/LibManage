@@ -6,6 +6,18 @@ namespace LibManage.Services.Core
 {
     public class FileUploadService(IWebHostEnvironment env) : IFileUploadService
     {
+        public async Task<bool> DeleteFileAsync(string relativePath)
+        {
+            var fullPath = Path.Combine(env.WebRootPath, relativePath.TrimStart('/'));
+
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+                return true;
+            }
+            return false;
+        }
+
         public async Task<string> UploadFileAsync(IFormFile file, string subFolder)
         {
             if (file == null || file.Length == 0)

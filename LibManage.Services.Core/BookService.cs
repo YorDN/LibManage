@@ -30,8 +30,10 @@ namespace LibManage.Services.Core
             var author = await context.Authors
             .Include(a => a.WrittenBooks)
             .FirstOrDefaultAsync(a => a.Id == model.AuthorId);
-
-            if (author == null)
+            var publisher = await context.Publishers
+             .Include(p => p.Books)
+             .FirstOrDefaultAsync(p => p.Id == model.PublisherId);
+            if (author == null || publisher == null)
             {
                 return false;
             }
@@ -71,8 +73,42 @@ namespace LibManage.Services.Core
             }
             await context.Books.AddAsync(book);
             author.WrittenBooks.Add(book);
+            publisher.Books.Add(book);
             await context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> DeleteBookAsync(Guid id)
+        {
+            Book? book = await context.Books.FirstOrDefaultAsync(b => b.Id == id);
+            if (book == null)
+                return false;
+            var author = await context.Authors
+                .Include(a => a.WrittenBooks)
+                .FirstOrDefaultAsync(a => a.Id == book.AuthorId);
+            var publisher = await context.Publishers
+                 .Include(p => p.Books)
+                 .FirstOrDefaultAsync(p => p.Id == book.PublisherId);
+            if (author == null || publisher == null)
+                return false;
+            if (!string.IsNullOrEmpty(book.Cover) && !book.Cover.EndsWith("no_cover_available.png"))
+            {
+                bool coverDeletionResult = await fileUploadService.DeleteFileAsync(book.Cover);
+                if (!coverDeletionResult)
+                    return false;
+            }
+            if (!string.IsNullOrEmpty(book.BookFilePath))
+            {
+                bool fileDeletionResult = await fileUploadService.DeleteFileAsync(book.BookFilePath);
+                if (!fileDeletionResult)
+                    return false;
+            }
+            context.Books.Remove(book);
+            author.WrittenBooks.Remove(book);
+            publisher.Books.Remove(book);
+            await context.SaveChangesAsync();
+            return true;
+
         }
 
         public async Task<IEnumerable<AllBooksViewModel>?> GetAllBooksAsync()

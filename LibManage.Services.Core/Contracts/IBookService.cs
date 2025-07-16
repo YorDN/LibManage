@@ -9,5 +9,6 @@ namespace LibManage.Services.Core.Contracts
         public Task<bool> CreateBookAsync(AddBookInputModel model);
         public Task<BookDetailsViewModel> GetBookDetailsAsync(Guid id);
         public Task<DeleteBookViewModel?> GetDeletedBookDetailsAsync(Guid id);
+        public Task<bool> DeleteBookAsync(Guid id);
     }
 }

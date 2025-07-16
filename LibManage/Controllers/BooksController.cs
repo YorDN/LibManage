@@ -77,6 +77,17 @@ namespace LibManage.Web.Controllers
 
             return View(model);
         }
+        [HttpPost]
+        [Authorize(Roles = "Admin, Manager")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await bookService.DeleteBookAsync(id);
+
+            if (!result)
+                return NotFound();
+
+            return RedirectToAction("All");
+        }
         private bool IsEpub(IFormFile file)
         {
             var allowedExtensions = new[] { ".epub" };
