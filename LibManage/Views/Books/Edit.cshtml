@@ -1,0 +1,139 @@
+﻿@using static LibManage.Data.Models.Library.Book
+@model EditBookInputModel
+
+@{
+    ViewData["Title"] = "Edit Book";
+    var bookTypes = Enum.GetNames(typeof(BookType));
+}
+
+<h2 class="mt-4">Edit Book</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data" class="mt-4">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ExistingCoverPath" />
+    <input type="hidden" asp-for="ExistingFilePath" />
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ISBN" class="form-label"></label>
+        <input asp-for="ISBN" class="form-control" />
+        <span asp-validation-for="ISBN" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ReleaseDate" class="form-label"></label>
+        <input asp-for="ReleaseDate" class="form-control" type="date" />
+        <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Edition" class="form-label"></label>
+        <input asp-for="Edition" class="form-control" />
+        <span asp-validation-for="Edition" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Language" class="form-label"></label>
+        <input asp-for="Language" class="form-control" />
+        <span asp-validation-for="Language" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Genre" class="form-label"></label>
+        <input asp-for="Genre" class="form-control" />
+        <span asp-validation-for="Genre" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Type" class="form-label">Book Type</label>
+        <select asp-for="Type" class="form-select" id="bookTypeSelect">
+            @foreach (var type in bookTypes)
+            {
+                <option value="@type" selected="@(Model.Type == type ? "selected" : null)">@type</option>
+            }
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3" id="durationField" style="display: @(Model.Type == "Audio" ? "block" : "none")">
+        <label asp-for="Duration" class="form-label">Duration (hh:mm:ss)</label>
+        <input asp-for="Duration" class="form-control" type="time" step="1" />
+        <span asp-validation-for="Duration" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Current Cover</label><br />
+        <img src="@Model.ExistingCoverPath" alt="Book Cover" style="max-height: 200px;" class="img-thumbnail" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="NewCover" class="form-label">Change Cover</label>
+        <input asp-for="NewCover" type="file" class="form-control" />
+        <span asp-validation-for="NewCover" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3" id="bookFileUpload" style="display: @(Model.Type == "Digital" || Model.Type == "Audio" ? "block" : "none")">
+        <label asp-for="NewBookFile" class="form-label">Upload New File</label>
+        <input asp-for="NewBookFile" type="file" class="form-control" />
+        <span asp-validation-for="NewBookFile" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AuthorId" class="form-label"></label>
+        <select asp-for="AuthorId" class="form-select select2" asp-items="@(new SelectList(Model.Authors, "Id", "Name"))">
+            <option disabled selected value="">Select an author</option>
+        </select>
+        <span asp-validation-for="AuthorId" class="text-danger"></span>
+        <div class="mt-2">
+            <a class="btn btn-outline-secondary" asp-controller="Authors" asp-action="Add">
+                Add New Author
+            </a>
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <label asp-for="PublisherId" class="form-label"></label>
+        <select asp-for="PublisherId" class="form-select select2" asp-items="@(new SelectList(Model.Publishers, "Id", "Name"))">
+            <option disabled selected value="">Select a publisher</option>
+        </select>
+        <span asp-validation-for="PublisherId" class="text-danger"></span>
+        <div class="mt-2">
+            <a class="btn btn-outline-secondary" asp-controller="Publishers" asp-action="Add">
+                Add New Publisher
+            </a>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const typeSelect = document.getElementById("bookTypeSelect");
+        const durationField = document.getElementById("durationField");
+        const fileField = document.getElementById("bookFileUpload");
+
+        function updateFields() {
+            const selected = typeSelect.value;
+            durationField.style.display = selected === "Audio" ? "block" : "none";
+            fileField.style.display = (selected === "Digital" || selected === "Audio") ? "block" : "none";
+        }
+
+        typeSelect.addEventListener("change", updateFields);
+        updateFields(); // call on page load
+    </script>
+}

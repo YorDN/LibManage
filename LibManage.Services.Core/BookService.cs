@@ -177,7 +177,7 @@ namespace LibManage.Services.Core
             return allAuthorBooks;
         }
 
-        public async Task<BookDetailsViewModel> GetBookDetailsAsync(Guid id)
+        public async Task<BookDetailsViewModel?> GetBookDetailsAsync(Guid id)
         {
             var book = await context.Books
             .Include(b => b.Author)
@@ -195,6 +195,49 @@ namespace LibManage.Services.Core
                 IsTaken = isTaken
             };
 
+        }
+
+        public async Task<EditBookInputModel?> GetBookEditModelAsync(Guid id)
+        {
+            Book? book = await context.Books
+                .FirstOrDefaultAsync(b => b.Id == id);
+            if (book == null)
+                return null;
+
+            EditBookInputModel model = new EditBookInputModel() 
+            { 
+                Id = id,
+                ISBN = book.ISBN,
+                Description = book.Description,
+                Duration = book.Duration,
+                Edition = book.Edition,
+                Genre = book.Genre,
+                AuthorId = book.AuthorId,
+                ExistingCoverPath = book.Cover,
+                Language = book.Language,
+                ExistingFilePath = book.BookFilePath,
+                ReleaseDate = book.ReleaseDate,
+                Title = book.Title,
+                Type = book.Type.ToString(),
+                PublisherId = book.PublisherId,
+            };
+            model.Authors = await context.Authors
+                .Select(p => new AddBookAuthorViewModel
+                {
+                    Id = p.Id,
+                    Name = p.FullName
+                })
+                .ToListAsync();
+
+            model.Publishers = await context.Publishers
+                .Select(p => new AddBookPublisherViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name
+                })
+                .ToListAsync();
+
+            return model;
         }
 
         public async Task<AddBookInputModel> GetBookInputModelAsync()
@@ -234,5 +277,72 @@ namespace LibManage.Services.Core
 
             return model;
         }
+
+        public async Task<bool> UpdateBookAsync(EditBookInputModel model)
+        {
+            var book = await context.Books.FindAsync(model.Id);
+            if (book == null) return false;
+
+            book.Title = model.Title;
+            book.ISBN = model.ISBN;
+            book.ReleaseDate = model.ReleaseDate;
+            book.Edition = model.Edition;
+            book.Language = model.Language;
+            book.Genre = model.Genre;
+            book.Description = model.Description;
+            book.Type = Enum.Parse<BookType>(model.Type);
+            book.Duration = book.Type == BookType.Audio ? model.Duration : null;
+           
+            if (book.AuthorId != model.AuthorId)
+            {
+                Author? originalAuthor = await context.Authors.FirstOrDefaultAsync(a => a.Id == book.AuthorId);
+                Author? newAuthor = context.Authors
+                    .FirstOrDefault(a => a.Id == model.AuthorId);
+                if (newAuthor == null || originalAuthor == null) 
+                    return false;
+
+                originalAuthor.WrittenBooks.Remove(book);
+                newAuthor.WrittenBooks.Add(book);
+                book.AuthorId = model.AuthorId;
+                await context.SaveChangesAsync();
+            }
+            if(book.PublisherId != model.PublisherId)
+            {
+                Publisher? originalPublisher = await context.Publishers.FirstOrDefaultAsync(p => p.Id == book.PublisherId); ;
+                Publisher? newPublisher = context.Publishers
+                    .FirstOrDefault(p => p.Id == model.PublisherId);
+                if (newPublisher == null || originalPublisher == null)
+                    return false;
+                originalPublisher.Books.Remove(book);
+                newPublisher.Books.Add(book);
+                book.PublisherId = model.PublisherId;
+                await context.SaveChangesAsync();
+            }
+
+            if (model.NewCover != null)
+            {
+                await fileUploadService.DeleteFileAsync(model.ExistingCoverPath);
+                book.Cover = await fileUploadService.UploadFileAsync(model.NewCover, "covers");
+            }
+
+            if ((book.Type == Book.BookType.Digital || book.Type == Book.BookType.Audio) && model.NewBookFile != null)
+            {
+                if (!string.IsNullOrEmpty(model.ExistingFilePath))
+                    await fileUploadService.DeleteFileAsync(model.ExistingFilePath);
+
+
+                string bookFileSubFolder = model.Type switch
+                {
+                    "Digital" => "files/digital",
+                    "Audio" => "files/audio",
+                    _ => "files"
+                };
+                book.BookFilePath = await fileUploadService.UploadFileAsync(model.NewBookFile, bookFileSubFolder);
+            }
+
+            await context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

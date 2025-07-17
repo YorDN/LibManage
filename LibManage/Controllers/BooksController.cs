@@ -88,6 +88,28 @@ namespace LibManage.Web.Controllers
 
             return RedirectToAction("All");
         }
+        [HttpGet]
+        [Authorize(Roles = "Admin, Manager")]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var model = await bookService.GetBookEditModelAsync(id);
+            if (model == null)
+                return NotFound();
+
+            ViewBag.Types = Enum.GetNames(typeof(Book.BookType));
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditBookInputModel model)
+        {
+            if (!ModelState.IsValid)
+                return this.RedirectToAction(nameof(Edit), new { id = model.Id });
+            bool result = await bookService.UpdateBookAsync(model);
+
+            if (!result)
+                return this.RedirectToAction(nameof(Edit), new { id = model.Id });
+            return this.RedirectToAction(nameof(Details), new { id = model.Id });
+        }
         private bool IsEpub(IFormFile file)
         {
             var allowedExtensions = new[] { ".epub" };
