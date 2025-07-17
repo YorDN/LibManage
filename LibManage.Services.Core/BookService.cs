@@ -140,6 +140,43 @@ namespace LibManage.Services.Core
             return allBooksViewModel;
         }
 
+        public async Task<List<AllBooksViewModel>?> GetAllBooksFromAuthorAsync(Guid authorId)
+        {
+            Author? author = await context.Authors
+                .FirstOrDefaultAsync(a => a.Id == authorId);
+
+            if( author == null )
+                return null;
+
+            List<AllBooksViewModel>? allAuthorBooks = await context.Books
+                .Include(d => d.Author)
+                .AsNoTracking()
+                .Where(b => b.Author.Id == authorId)
+                .Select(b => new AllBooksViewModel
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    AuthorName = b.Author.FullName,
+                    BookType = b.Type.ToString(),
+                    Cover = b.Cover
+                })
+                .ToListAsync();
+
+            if (allAuthorBooks is null)
+                return allAuthorBooks;
+
+            for (int i = 0; i < allAuthorBooks.Count(); i++)
+            {
+                double? rating = await ratingService.GetRatingForABookByIdAsync(allAuthorBooks.ToList()[i].Id);
+                if (rating != null)
+                {
+                    allAuthorBooks.ToList()[i].Rating = (int)rating;
+                }
+            }
+
+            return allAuthorBooks;
+        }
+
         public async Task<BookDetailsViewModel> GetBookDetailsAsync(Guid id)
         {
             var book = await context.Books

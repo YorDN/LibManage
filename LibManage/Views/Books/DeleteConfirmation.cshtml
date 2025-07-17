@@ -10,6 +10,8 @@
         <img src="@Model.Cover" alt="Cover of @Model.Title" style="max-height: 250px;" class="shadow rounded" />
     </div>
 
-    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline">
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
     <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
 </div>

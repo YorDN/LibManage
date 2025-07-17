@@ -6,5 +6,6 @@ namespace LibManage.Services.Core.Contracts
     {
         public Task<bool> CreateAuthorAsync(AddAuthorInputModel model);
         public Task<IEnumerable<AllAuthorsViewModel>> GetAllAuthorsAsync();
+        public Task<AuthorDetailsViewModel?> GetAuthorDetailsAsync(Guid id);
     }
 }

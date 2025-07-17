@@ -40,5 +40,15 @@ namespace LibManage.Web.Controllers
 
             return View(model);
         }
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            AuthorDetailsViewModel? model = await authorService
+                .GetAuthorDetailsAsync(id);
+            if (model == null) 
+                return this.NotFound();
+
+            return View(model);
+        }
     }
 }
