@@ -74,12 +74,12 @@
 
     <div class="mb-3">
         <label class="form-label">Current Cover</label><br />
-        <img src="@Model.ExistingCoverPath" alt="Book Cover" style="max-height: 200px;" class="img-thumbnail" />
+        <img src="@Model.ExistingCoverPath" alt="Book Cover" id="coverPreview" style="max-height: 200px;" class="img-thumbnail" />
     </div>
 
     <div class="mb-3">
         <label asp-for="NewCover" class="form-label">Change Cover</label>
-        <input asp-for="NewCover" type="file" class="form-control" />
+        <input asp-for="NewCover" type="file" class="form-control" onchange="previewCover(this)" />
         <span asp-validation-for="NewCover" class="text-danger"></span>
     </div>
 
@@ -133,6 +133,17 @@
             fileField.style.display = (selected === "Digital" || selected === "Audio") ? "block" : "none";
         }
 
+        function previewCover(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    document.getElementById('coverPreview').src = e.target.result;
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
         typeSelect.addEventListener("change", updateFields);
         updateFields(); // call on page load
     </script>
