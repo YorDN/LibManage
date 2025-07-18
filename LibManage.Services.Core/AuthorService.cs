@@ -5,6 +5,7 @@ using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Authors;
 using LibManage.ViewModels.Books;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace LibManage.Services.Core
 {
@@ -44,6 +45,44 @@ namespace LibManage.Services.Core
             return true;
         }
 
+        public async Task<bool> DeleteAuthorAsync(Guid id)
+        {
+            Author? author = await context.Authors
+                .Include(a => a.WrittenBooks)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (author == null)
+                return false;
+
+            using var transaction = await context.Database.BeginTransactionAsync();
+
+            List<Book> books = author.WrittenBooks.ToList();
+            foreach (var book in books)
+            {
+                bool success = await bookService.DeleteBookAsync(book.Id);
+                if (!success)
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(author.Photo) && !author.Photo.EndsWith("DefaultAuthor.png"))
+            {
+                bool photoDeleted = await fileUploadService.DeleteFileAsync(author.Photo);
+                if (!photoDeleted)
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+            }
+
+            context.Authors.Remove(author);
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return true;
+        }
+
         public async Task<IEnumerable<AllAuthorsViewModel>> GetAllAuthorsAsync()
         {
             IEnumerable<AllAuthorsViewModel> authors = await context.Authors
@@ -59,6 +98,25 @@ namespace LibManage.Services.Core
             return authors;
         }
 
+        public async Task<DeleteAuthorViewModel?> GetAuthorDeleteInfoAsync(Guid id)
+        {
+            Author? author = await context.Authors
+                .Include(a => a.WrittenBooks)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (author == null) 
+                return null;
+
+            DeleteAuthorViewModel deleteAuthorViewModel = new DeleteAuthorViewModel()
+            {
+                Id = author.Id,
+                Name = author.FullName,
+                Photo = author.Photo,
+                BooksCount = author.WrittenBooks.Count(),
+            };
+
+            return deleteAuthorViewModel;
+        }
         public async Task<AuthorDetailsViewModel?> GetAuthorDetailsAsync(Guid id)
         {
             Author? author = await context.Authors

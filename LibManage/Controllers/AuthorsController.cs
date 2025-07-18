@@ -41,6 +41,7 @@ namespace LibManage.Web.Controllers
             return View(model);
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(Guid id)
         {
             AuthorDetailsViewModel? model = await authorService
@@ -49,6 +50,32 @@ namespace LibManage.Web.Controllers
                 return this.NotFound();
 
             return View(model);
+        }
+        [HttpGet]
+        [Authorize(Roles = "Admin, Manager")]
+        public async Task<IActionResult> Delete(Guid Id)
+        {
+            DeleteAuthorViewModel? model = await authorService
+                .GetAuthorDeleteInfoAsync(Id);
+
+            if (model == null)
+                return this.NotFound();
+
+            return View(model);
+        }
+        [HttpPost]
+        [Authorize(Roles = "Admin, Manager")]
+        public async Task<IActionResult> Delete(DeleteAuthorViewModel model)
+        {
+            if (!model.ConfirmDeleteBooks)
+            {
+                TempData["Error"] = "Author could not be deleted. They may have associated books.";
+                return this.RedirectToAction(nameof(Details), new { id = model.Id });
+            }
+            bool result = await authorService.DeleteAuthorAsync(model.Id);
+            if (!result)
+                return this.NotFound();
+            return RedirectToAction("All");
         }
     }
 }
