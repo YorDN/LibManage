@@ -9,5 +9,7 @@ namespace LibManage.Services.Core.Contracts
         public Task<AuthorDetailsViewModel?> GetAuthorDetailsAsync(Guid id);
         public Task<DeleteAuthorViewModel?> GetAuthorDeleteInfoAsync(Guid id);
         public Task<bool> DeleteAuthorAsync(Guid id);
+        public Task<EditAuthorInputModel?> GetAuthorEditInfoAsync(Guid id);
+        public Task<bool> EditAuthorAsync(EditAuthorInputModel model);
     }
 }

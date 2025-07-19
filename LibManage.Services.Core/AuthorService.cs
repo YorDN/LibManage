@@ -1,4 +1,5 @@
-﻿using LibManage.Common.Enumerations;
+﻿using LibManage.Common;
+using LibManage.Common.Enumerations;
 using LibManage.Data;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
@@ -83,6 +84,31 @@ namespace LibManage.Services.Core
             return true;
         }
 
+        public async Task<bool> EditAuthorAsync(EditAuthorInputModel model)
+        {
+            Author? author = await context.Authors
+                .FirstOrDefaultAsync(a => a.Id ==  model.Id);
+
+            if (author == null) return false;
+
+            author.FullName = model.FullName;
+            author.DateOfDeath = model.DateOfDeath;
+            author.DateOfBirth = model.DateOfBirth;
+            author.Biography = model.Biography;
+
+            if (model.NewPhoto != null)
+            {
+                bool deletionResult = await fileUploadService.DeleteFileAsync(author.Photo);
+                if (!deletionResult) 
+                    return false;
+                author.Photo = await fileUploadService
+                    .UploadFileAsync(model.NewPhoto, Subfolders.AuthorProfilePictures);
+            }
+
+            await context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<IEnumerable<AllAuthorsViewModel>> GetAllAuthorsAsync()
         {
             IEnumerable<AllAuthorsViewModel> authors = await context.Authors
@@ -137,6 +163,27 @@ namespace LibManage.Services.Core
                 DateOfDeath = author.DateOfDeath,
                 WrittenBooks = books
             };
+            return model;
+        }
+
+        public async Task<EditAuthorInputModel?> GetAuthorEditInfoAsync(Guid id)
+        {
+            Author? author = await context.Authors
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if(author == null) 
+                return null;
+
+            EditAuthorInputModel model = new EditAuthorInputModel()
+            {
+                Id = author.Id,
+                Biography = author.Biography,
+                DateOfBirth = author.DateOfBirth,
+                DateOfDeath = author.DateOfDeath,
+                FullName = author.FullName,
+                ExistingPhotoPath = author.Photo
+            };
+
             return model;
         }
     }

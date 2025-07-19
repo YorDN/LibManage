@@ -77,5 +77,30 @@ namespace LibManage.Web.Controllers
                 return this.NotFound();
             return RedirectToAction("All");
         }
+        [HttpGet]
+        [Authorize(Roles = "Admin, Manager")]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            EditAuthorInputModel? model = await authorService.GetAuthorEditInfoAsync(id);
+            if (model == null)
+                return this.NotFound();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, Manager")]
+        public async Task<IActionResult> Edit(EditAuthorInputModel model)
+        {
+            if(!ModelState.IsValid)
+                return this.RedirectToAction(nameof(Edit));
+
+            bool result = await authorService
+                .EditAuthorAsync(model);
+            if (!result)
+                return this.RedirectToAction(nameof(Edit), new {id = model.Id});
+
+            return this.RedirectToAction(nameof(Details), new {id = model.Id});
+        }
     }
 }
