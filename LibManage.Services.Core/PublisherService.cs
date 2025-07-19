@@ -1,4 +1,5 @@
-﻿using LibManage.Data;
+﻿using LibManage.Common;
+using LibManage.Data;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Publishers;
@@ -20,7 +21,7 @@ namespace LibManage.Services.Core
             }
             else
             {
-                pfp = await fileUploadService.UploadFileAsync(model.LogoFile, "pfps/publisher");
+                pfp = await fileUploadService.UploadFileAsync(model.LogoFile, Subfolders.PublisherProfilePictures);
             }
 
             Publisher publisher = new Publisher()

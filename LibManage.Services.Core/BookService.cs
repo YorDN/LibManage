@@ -1,4 +1,5 @@
 ﻿
+using LibManage.Common;
 using LibManage.Data;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
@@ -24,7 +25,7 @@ namespace LibManage.Services.Core
             }
             else
             {
-                cover = await fileUploadService.UploadFileAsync(model.CoverFile, "covers");
+                cover = await fileUploadService.UploadFileAsync(model.CoverFile, Subfolders.Covers);
             }
 
             var author = await context.Authors
@@ -63,9 +64,9 @@ namespace LibManage.Services.Core
             {
                 string bookFileSubFolder = model.Type switch
                 {
-                    "Digital" => "files/digital",
-                    "Audio" => "files/audio",
-                    _ => "files"
+                    "Digital" => Subfolders.DigitalFiles,
+                    "Audio" => Subfolders.AudioFiles,
+                    _ => Subfolders.DefaultUploads
                 };
 
                 string filePath = await fileUploadService.UploadFileAsync(model.BookFile, bookFileSubFolder);
@@ -322,7 +323,7 @@ namespace LibManage.Services.Core
             if (model.NewCover != null)
             {
                 await fileUploadService.DeleteFileAsync(model.ExistingCoverPath);
-                book.Cover = await fileUploadService.UploadFileAsync(model.NewCover, "covers");
+                book.Cover = await fileUploadService.UploadFileAsync(model.NewCover, Subfolders.Covers);
             }
 
             if ((book.Type == Book.BookType.Digital || book.Type == Book.BookType.Audio) && model.NewBookFile != null)
@@ -333,9 +334,9 @@ namespace LibManage.Services.Core
 
                 string bookFileSubFolder = model.Type switch
                 {
-                    "Digital" => "files/digital",
-                    "Audio" => "files/audio",
-                    _ => "files"
+                    "Digital" => Subfolders.DigitalFiles,
+                    "Audio" => Subfolders.AudioFiles,
+                    _ => Subfolders.DefaultUploads
                 };
                 book.BookFilePath = await fileUploadService.UploadFileAsync(model.NewBookFile, bookFileSubFolder);
             }

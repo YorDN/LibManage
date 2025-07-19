@@ -29,7 +29,7 @@ namespace LibManage.Services.Core
             }
             else
             {
-                pfp = await fileUploadService.UploadFileAsync(model.PhotoFile, "pfps/author");
+                pfp = await fileUploadService.UploadFileAsync(model.PhotoFile, Subfolders.AuthorProfilePictures);
             }
 
             Author author = new Author()
