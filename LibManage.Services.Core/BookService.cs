@@ -1,10 +1,12 @@
 ﻿
 using LibManage.Common;
 using LibManage.Data;
+using LibManage.Data.Models.DTOs;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Books;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using static LibManage.Data.Models.Library.Book;
 
 namespace LibManage.Services.Core
@@ -112,34 +114,54 @@ namespace LibManage.Services.Core
 
         }
 
-        public async Task<IEnumerable<AllBooksViewModel>?> GetAllBooksAsync()
+        public async Task<IEnumerable<AllBooksViewModel>?> GetAllBooksAsync(BookFilterOptions options)
         {
-            IEnumerable<AllBooksViewModel>? allBooksViewModel = await context.Books
-                .Include(d => d.Author)
+            var query = context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Borrows)
+                .Include(b => b.Reviews)
                 .AsNoTracking()
-                .Select(b => new AllBooksViewModel
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    AuthorName = b.Author.FullName,
-                    BookType = b.Type.ToString(),
-                    Cover = b.Cover
-                })
-                .ToListAsync();
-            if (allBooksViewModel is  null ) 
-                return allBooksViewModel;
+                .AsQueryable();
 
-            for ( int i = 0; i < allBooksViewModel.Count(); i++ )
+            if (!string.IsNullOrWhiteSpace(options.SearchTerm))
+                query = query.Where(b =>
+                    b.Title.Contains(options.SearchTerm) ||
+                    b.Author.FullName.Contains(options.SearchTerm));
+
+            if (options.MinimumRating.HasValue)
+                query = query.Where(b => b.Reviews.Any() &&
+                                         b.Reviews.Average(r => r.Rating) >= options.MinimumRating.Value);
+
+            if (!string.IsNullOrEmpty(options.BookType) &&
+                Enum.TryParse<BookType>(options.BookType, out var parsedType))
             {
-                double? rating = await ratingService.GetRatingForABookByIdAsync(allBooksViewModel.ToList()[i].Id);
-                if ( rating != null)
-                {
-                    allBooksViewModel.ToList()[i].Rating = (int)rating;
-                }
+                query = query.Where(b => b.Type == parsedType);
             }
 
-            return allBooksViewModel;
+            if (options.IsTaken.HasValue)
+                query = query.Where(b => b.Borrows.Any(br => br.Returned == false) == options.IsTaken.Value);
+
+            query = options.SortBy switch
+            {
+                "Title" => options.SortDescending ? query.OrderByDescending(b => b.Title) : query.OrderBy(b => b.Title),
+                "Rating" => options.SortDescending
+                    ? query.OrderByDescending(b => b.Reviews.Any() ? b.Reviews.Average(r => r.Rating) : 0)
+                    : query.OrderBy(b => b.Reviews.Any() ? b.Reviews.Average(r => r.Rating) : 0),
+                _ => query.OrderBy(b => b.Title)
+            };
+
+            return await query.Select(b => new AllBooksViewModel
+            {
+                Id = b.Id,
+                Title = b.Title,
+                AuthorName = b.Author.FullName,
+                BookType = b.Type.ToString(),
+                Cover = b.Cover,
+                Rating = b.Reviews.Any() ? (int)b.Reviews.Average(r => r.Rating) : 0,
+                IsTaken = b.Borrows.Any(br => br.Returned == false)
+            }).ToListAsync();
         }
+
 
         public async Task<List<AllBooksViewModel>?> GetAllBooksFromAuthorAsync(Guid authorId)
         {

@@ -1,4 +1,5 @@
-﻿using LibManage.Data.Models.Library;
+﻿using LibManage.Data.Models.DTOs;
+using LibManage.Data.Models.Library;
 using LibManage.Services.Core;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Books;
@@ -12,12 +13,12 @@ namespace LibManage.Web.Controllers
     {
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All([FromQuery] BookFilterOptions options)
         {
-            IEnumerable<AllBooksViewModel>? books = await bookService
-                .GetAllBooksAsync();
+            var books = await bookService.GetAllBooksAsync(options);
             return View(books);
         }
+
         [Authorize(Roles = "Admin, Manager")]
         [HttpGet]
         public async Task<IActionResult> Add()

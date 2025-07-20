@@ -31,6 +31,45 @@
         }
     </div>
 }
+<form asp-action="All" method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <input type="text" name="SearchTerm" class="form-control" placeholder="Search by title or author" />
+    </div>
+    <div class="col-md-2">
+        <select name="MinimumRating" class="form-select">
+            <option value="">Min Rating</option>
+            @for (int i = 1; i <= 5; i++)
+            {
+                <option value="@i">@i+ stars</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="BookType" class="form-select">
+            <option value="">All Types</option>
+            <option>Digital</option>
+            <option>Audio</option>
+            <option>Physical</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="IsTaken" class="form-select">
+            <option value="">All</option>
+            <option value="false">Available</option>
+            <option value="true">Taken</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="SortBy" class="form-select">
+            <option value="Title">Sort by Title</option>
+            <option value="Rating">Sort by Rating</option>
+        </select>
+    </div>
+    <div class="col-md-1">
+        <input type="hidden" name="SortDescending" value="false" />
+        <button type="submit" class="btn btn-primary w-100">Filter</button>
+    </div>
+</form>
 
 
 <div class="container py-4">
