@@ -22,17 +22,7 @@
         return stars;
     };
 }
-@if (!Model.Any())
-{
-    <div class="alert alert-info text-center">
-        📚 No books available in the library.
-        <br />
-        @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
-        {
-            <a class="nav-link fw-bold" asp-area="" asp-controller="Books" asp-action="Add">Add a book</a>
-        }
-    </div>
-}
+
 <form asp-action="All" method="get" class="row g-3 mb-4">
     <div class="col-md-3">
         <input type="text" name="SearchTerm" class="form-control" placeholder="Search by title or author" />
@@ -73,6 +63,17 @@
     </div>
 </form>
 
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        📚 No books available in the library.
+        <br />
+        @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
+        {
+            <a class="nav-link fw-bold" asp-area="" asp-controller="Books" asp-action="Add">Add a book</a>
+        }
+    </div>
+}
 
 <div class="container py-4">
     <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-4 ">
