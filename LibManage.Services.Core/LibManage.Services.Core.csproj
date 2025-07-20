@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.70.0.3834" />
+    <PackageReference Include="VersOne.Epub" Version="3.3.4" />
   </ItemGroup>
 
   <ItemGroup>

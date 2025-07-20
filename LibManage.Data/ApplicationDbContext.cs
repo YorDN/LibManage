@@ -26,6 +26,7 @@ public class ApplicationDbContext : IdentityDbContext<
     public DbSet<Borrow> Borrows { get; set; } = null!;
     public DbSet<Publisher> Publishers { get; set; } = null!;
     public DbSet<Review> Reviews { get; set; } = null!;
+    public DbSet<UserEpubProgress> UserEpubProgresses { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

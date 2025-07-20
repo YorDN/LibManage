@@ -27,6 +27,7 @@ public class Program
         builder.Services.AddScoped<IFileUploadService, FileUploadService>();
         builder.Services.AddScoped<ICountryService, CountryService>();
         builder.Services.AddScoped<IPublisherService, PublisherService>();
+        builder.Services.AddScoped<IEpubReaderService, EpubReaderService>();
 
         builder.Services.AddScoped<HttpClient>();
         builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>

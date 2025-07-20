@@ -1,14 +1,17 @@
-﻿using LibManage.Data.Models.DTOs;
+﻿
+using LibManage.Data.Models.DTOs;
 using LibManage.Data.Models.Library;
+using LibManage.Services.Core;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Books;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibManage.Web.Controllers
 {
-    public class BooksController(IBookService bookService) : BaseController
+    public class BooksController(IBookService bookService, IEpubReaderService epubReaderService, UserManager<User> userManager) : BaseController
     {
         [AllowAnonymous]
         [HttpGet]
@@ -109,6 +112,19 @@ namespace LibManage.Web.Controllers
             if (!result)
                 return this.RedirectToAction(nameof(Edit), new { id = model.Id });
             return this.RedirectToAction(nameof(Details), new { id = model.Id });
+        }
+        [HttpGet]
+        public async Task<IActionResult> Read(Guid id, int? chapterIndex = null)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return this.NotFound();
+            var model = await epubReaderService.LoadChapterAsync(id, user.Id, chapterIndex);
+            if (model == null) 
+                return NotFound("Book or chapter not found.");
+
+            return View(model);
+
         }
         private bool IsEpub(IFormFile file)
         {

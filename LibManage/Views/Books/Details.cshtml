@@ -62,7 +62,7 @@
         {
             @if (!Model.IsTaken)
             {
-                <form asp-action="Rent" asp-controller="Books" method="post" class="d-inline">
+                <form asp-action="Read" asp-controller="Books" method="get" class="d-inline">
                     <input type="hidden" name="id" value="@book.Id" />
                     <button type="submit" class="btn btn-success">Rent</button>
                 </form>
