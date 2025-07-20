@@ -1,6 +1,5 @@
-﻿using LibManage.Data.Models.Library;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+
 using System.ComponentModel.DataAnnotations;
 
 namespace LibManage.ViewModels.Books

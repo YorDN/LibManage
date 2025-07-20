@@ -1,5 +1,6 @@
 ﻿using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Authors;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,8 +32,8 @@ namespace LibManage.Web.Controllers
             }
             return this.RedirectToAction(nameof(All)); ;
         }
-        [HttpGet]
         [AllowAnonymous]
+        [HttpGet]
         public async Task<IActionResult> All()
         {
             IEnumerable<AllAuthorsViewModel> model = await authorService
@@ -40,8 +41,8 @@ namespace LibManage.Web.Controllers
 
             return View(model);
         }
-        [HttpGet]
         [AllowAnonymous]
+        [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
             AuthorDetailsViewModel? model = await authorService
@@ -51,8 +52,8 @@ namespace LibManage.Web.Controllers
 
             return View(model);
         }
-        [HttpGet]
         [Authorize(Roles = "Admin, Manager")]
+        [HttpGet]
         public async Task<IActionResult> Delete(Guid Id)
         {
             DeleteAuthorViewModel? model = await authorService
@@ -63,8 +64,8 @@ namespace LibManage.Web.Controllers
 
             return View(model);
         }
-        [HttpPost]
         [Authorize(Roles = "Admin, Manager")]
+        [HttpPost]
         public async Task<IActionResult> Delete(DeleteAuthorViewModel model)
         {
             if (!model.ConfirmDeleteBooks)
@@ -77,8 +78,8 @@ namespace LibManage.Web.Controllers
                 return this.NotFound();
             return RedirectToAction("All");
         }
-        [HttpGet]
         [Authorize(Roles = "Admin, Manager")]
+        [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
             EditAuthorInputModel? model = await authorService.GetAuthorEditInfoAsync(id);
@@ -87,9 +88,8 @@ namespace LibManage.Web.Controllers
 
             return View(model);
         }
-
-        [HttpPost]
         [Authorize(Roles = "Admin, Manager")]
+        [HttpPost]
         public async Task<IActionResult> Edit(EditAuthorInputModel model)
         {
             if(!ModelState.IsValid)

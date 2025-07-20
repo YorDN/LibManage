@@ -5,8 +5,9 @@ using LibManage.Data.Models.DTOs;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Books;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+
 using static LibManage.Data.Models.Library.Book;
 
 namespace LibManage.Services.Core

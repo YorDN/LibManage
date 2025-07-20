@@ -1,11 +1,10 @@
 ﻿using LibManage.Data.Models.DTOs;
 using LibManage.Data.Models.Library;
-using LibManage.Services.Core;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Books;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace LibManage.Web.Controllers
 {
@@ -68,8 +67,8 @@ namespace LibManage.Web.Controllers
 
             return View(model);
         }
+        [Authorize(Roles = "Admin, Manager")]
         [HttpGet]
-        [Authorize(Roles ="Admin, Manager")]
         public async Task<IActionResult> DeleteConfirmation(Guid id)
         {
             DeleteBookViewModel? model = await bookService.GetDeletedBookDetailsAsync(id);
@@ -78,8 +77,8 @@ namespace LibManage.Web.Controllers
 
             return View(model);
         }
-        [HttpPost]
         [Authorize(Roles = "Admin, Manager")]
+        [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await bookService.DeleteBookAsync(id);
@@ -89,8 +88,8 @@ namespace LibManage.Web.Controllers
 
             return RedirectToAction("All");
         }
-        [HttpGet]
         [Authorize(Roles = "Admin, Manager")]
+        [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
             var model = await bookService.GetBookEditModelAsync(id);

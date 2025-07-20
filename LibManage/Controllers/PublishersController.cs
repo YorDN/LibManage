@@ -1,5 +1,6 @@
 ﻿using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Publishers;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,14 +9,14 @@ namespace LibManage.Web.Controllers
 {
     public class PublishersController (ICountryService countryService, IPublisherService publisherService) : BaseController
     {
-        [HttpGet]
         [AllowAnonymous]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return this.RedirectToAction(nameof(All));
         }
-        [HttpGet]
         [Authorize(Roles = "Admin, Manager")]
+        [HttpGet]
         public async Task<IActionResult> Add()
         {
             var countries = await countryService
@@ -37,6 +38,7 @@ namespace LibManage.Web.Controllers
             return View();
 
         }
+        [Authorize(Roles = "Admin, Manager")]
         [HttpPost]
         public async Task<IActionResult> Add(AddPublisherInputModel model)
         {
@@ -49,8 +51,8 @@ namespace LibManage.Web.Controllers
 
             return this.RedirectToAction(nameof(All));
         }
-        [HttpGet]
         [AllowAnonymous]
+        [HttpGet]
         public async Task<IActionResult> All()
         {
             IEnumerable<AllPublishersViewModel> model = await publisherService
