@@ -3,6 +3,7 @@ using LibManage.Data.Models.DTOs;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core;
 using LibManage.Services.Core.Contracts;
+using LibManage.ViewModels.Audio;
 using LibManage.ViewModels.Books;
 
 using Microsoft.AspNetCore.Authorization;
@@ -149,6 +150,17 @@ namespace LibManage.Web.Controllers
             return View(model);
 
         }
+        [HttpGet]
+        public async Task<IActionResult> Listen(Guid id)
+        {
+            AudioBookPlayerViewModel? model = await bookService.GetAudioBookPlayerViewModelAsync(id);
+
+            if (model == null)
+                return NotFound();
+
+            return View(model);
+        }
+
         private bool IsEpub(IFormFile file)
         {
             var allowedExtensions = new[] { ".epub" };

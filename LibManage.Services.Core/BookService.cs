@@ -4,6 +4,7 @@ using LibManage.Data;
 using LibManage.Data.Models.DTOs;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
+using LibManage.ViewModels.Audio;
 using LibManage.ViewModels.Books;
 
 using Microsoft.EntityFrameworkCore;
@@ -214,6 +215,39 @@ namespace LibManage.Services.Core
             }
 
             return allAuthorBooks;
+        }
+
+        public async Task<AudioBookPlayerViewModel?> GetAudioBookPlayerViewModelAsync(Guid id)
+        {
+            Book? book = await context.Books
+                .Include(b => b.Author)
+                .FirstOrDefaultAsync(b => b.Id == id);
+            
+            if (book == null) 
+                return null;
+            if (book.Type != BookType.Audio) 
+                return null;
+
+            AudioBookPlayerViewModel model = new AudioBookPlayerViewModel() 
+            { 
+                Id = book.Id,
+                Title = book.Title,
+                AuthorId = book.AuthorId,
+                AuthorName = book.Author.FullName,
+                Language = book.Language,
+                Cover = book.Cover,
+                Description = book.Description,
+                Duration = book.Duration,
+                UploadDate = book.UploadDate,
+                FilePath = book.BookFilePath
+            };
+
+            return model;
+        }
+
+        public Task<Book?> GetBookByIdAsync(Guid id)
+        {
+            return context.Books.Include(b => b.Author).FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<BookDetailsViewModel?> GetBookDetailsAsync(Guid bookId, Guid? userId = null)

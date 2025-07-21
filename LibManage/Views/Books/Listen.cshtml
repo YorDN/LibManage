@@ -1,0 +1,48 @@
+﻿
+@model AudioBookPlayerViewModel
+
+@{
+    ViewData["Title"] = $"Listen to {Model.Title}";
+}
+
+<div class="container mt-5">
+    <a asp-action="All" asp-controller="Borrows" class="btn btn-link mb-2 d-inline-flex align-items-center"><i class="bx bx-chevron-left bx-fw" style="font-size: 1rem;"></i>Go back</a>
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="@Model.Cover" alt="Book Cover" class="img-fluid rounded shadow-sm" />
+        </div>
+        <div class="col-md-8">
+            <h2>@Model.Title</h2>
+            <h5 class="text-muted mb-3">By <a class="text-muted" asp-action="Details" asp-controller="Authors" asp-route-id="@Model.AuthorId">@Model.AuthorName</a></h5>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <p class="mb-4">@Model.Description</p>
+            }
+
+            <ul class="list-group mb-4">
+                <li class="list-group-item">
+                    <strong>Language:</strong> @Model.Language
+                </li>
+                <li class="list-group-item">
+                    <strong>Duration:</strong> @(Model.Duration?.ToString(@"hh\:mm\:ss") ?? "Unknown")
+                </li>
+                <li class="list-group-item">
+                    <strong>Uploaded:</strong> @Model.UploadDate.ToLocalTime().ToString("dd MMM yyyy")
+                </li>
+            </ul>
+
+            @if (!string.IsNullOrWhiteSpace(Model.FilePath))
+            {
+                <audio controls class="w-100">
+                    <source src="@Url.Content(Model.FilePath)" type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                </audio>
+            }
+            else
+            {
+                <div class="alert alert-danger mt-3">No audio file found for this book.</div>
+            }
+        </div>
+    </div>
+</div>

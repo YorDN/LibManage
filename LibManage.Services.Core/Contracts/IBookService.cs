@@ -1,4 +1,6 @@
 ﻿using LibManage.Data.Models.DTOs;
+using LibManage.Data.Models.Library;
+using LibManage.ViewModels.Audio;
 using LibManage.ViewModels.Books;
 
 namespace LibManage.Services.Core.Contracts
@@ -14,5 +16,7 @@ namespace LibManage.Services.Core.Contracts
         public Task<List<AllBooksViewModel>?> GetAllBooksFromAuthorAsync(Guid authorId, Guid? userId = null); 
         public Task<bool> UpdateBookAsync(EditBookInputModel model);
         public Task<EditBookInputModel?> GetBookEditModelAsync(Guid id);
+        public Task<Book?> GetBookByIdAsync(Guid id);
+        public Task<AudioBookPlayerViewModel?> GetAudioBookPlayerViewModelAsync(Guid id);
     }
 }
