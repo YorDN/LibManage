@@ -1,0 +1,121 @@
+﻿@using LibManage.ViewModels.Admin
+
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container py-5">
+    <h1 class="mb-4 text-center">Admin Dashboard</h1>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card ">
+                <div class="card-body bg-primary">
+                    <h5 class="card-title text-white">Total Books</h5>
+                    <h2 class="card-text fw-bold text-white">@Model.TotalBooks</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body bg-success">
+                    <h5 class="card-title text-white">Total Users</h5>
+                    <h2 class="card-text fw-bold text-white">@Model.TotalUsers</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body bg-warning">
+                    <h5 class="card-title text-white">Total Authors</h5>
+                    <h2 class="card-text fw-bold text-white">@Model.TotalAuthors</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body bg-danger">
+                    <h5 class="card-title text-white">Total Publishers</h5>
+                    <h2 class="card-text fw-bold text-white">@Model.TotalPublishers</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Entity Overview</h5>
+                    <canvas id="entityBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Book Type Distribution</h5>
+                    <canvas id="bookTypePieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-outline-dark btn-lg">
+            Manage Users
+        </a>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const entityBarChart = new Chart(document.getElementById('entityBarChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Books', 'Users', 'Authors', 'Publishers'],
+            datasets: [{
+                label: 'Total Count',
+                data: [
+                    @Model.TotalBooks,
+                    @Model.TotalUsers,
+                    @Model.TotalAuthors,
+                    @Model.TotalPublishers
+                ],
+                backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    const bookTypePieChart = new Chart(document.getElementById('bookTypePieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Physical', 'Digital', 'Audio'],
+            datasets: [{
+                data: [
+                    @Model.PhysicalBooks,
+                    @Model.DigitalBooks,
+                    @Model.AudioBooks
+                ],
+                backgroundColor: ['#6c757d', '#0dcaf0', '#6610f2']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+</script>
