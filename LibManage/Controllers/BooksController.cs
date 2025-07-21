@@ -17,7 +17,17 @@ namespace LibManage.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> All([FromQuery] BookFilterOptions options)
         {
-            var books = await bookService.GetAllBooksAsync(options);
+            User? user = await userManager.GetUserAsync(User);
+            IEnumerable<AllBooksViewModel>? books = null;
+            if (user != null)
+            {
+                books = await bookService.GetAllBooksAsync(options, user.Id);
+            }
+            else
+            {
+                books = await bookService.GetAllBooksAsync(options);
+            }
+            
             return View(books);
         }
 
@@ -64,7 +74,17 @@ namespace LibManage.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var model = await bookService.GetBookDetailsAsync(id);
+            User? user = await userManager.GetUserAsync(User);
+            BookDetailsViewModel? model;
+            if (user != null)
+            {
+                model = await bookService.GetBookDetailsAsync(id, user.Id);
+            }
+            else
+            {
+                Guid? bId = null;
+                model = await bookService.GetBookDetailsAsync(id, bId);
+            }
             if (model == null)
                 return NotFound();
 
@@ -118,10 +138,13 @@ namespace LibManage.Web.Controllers
         {
             var user = await userManager.GetUserAsync(User);
             if (user == null)
-                return this.NotFound();
+                return this.Unauthorized();
             var model = await epubReaderService.LoadChapterAsync(id, user.Id, chapterIndex);
-            if (model == null) 
-                return NotFound("Book or chapter not found.");
+            if (model == null)
+            {
+                TempData["Error"] = "Either the book is not available or your borrow has expired.";
+                return RedirectToAction("All", "Borrows");
+            }
 
             return View(model);
 

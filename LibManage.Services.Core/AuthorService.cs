@@ -142,14 +142,14 @@ namespace LibManage.Services.Core
 
             return deleteAuthorViewModel;
         }
-        public async Task<AuthorDetailsViewModel?> GetAuthorDetailsAsync(Guid id)
+        public async Task<AuthorDetailsViewModel?> GetAuthorDetailsAsync(Guid id, Guid? userId = null)
         {
             Author? author = await context.Authors
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (author == null)
                 return null;
-            List<AllBooksViewModel>? books = await bookService.GetAllBooksFromAuthorAsync(id);
+            List<AllBooksViewModel>? books = await bookService.GetAllBooksFromAuthorAsync(id, userId);
             if (books == null)
                 return null;
             AuthorDetailsViewModel model = new AuthorDetailsViewModel()

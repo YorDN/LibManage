@@ -6,5 +6,6 @@ namespace LibManage.ViewModels.Books
     {
         public Book Book { get; set; }
         public bool IsTaken { get; set; }
+        public bool IsTakenByUser { get; set; }
     }
 }

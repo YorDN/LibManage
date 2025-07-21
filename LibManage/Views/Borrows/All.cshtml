@@ -1,0 +1,76 @@
+﻿@model IEnumerable<BorrowedBookViewModel>
+
+@{
+    ViewData["Title"] = "My Borrowed Books";
+}
+
+<h4 class="mb-4">My Borrowed Books</h4>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        You have no active borrows.
+    </div>
+}
+else
+{
+    <div class="container py-4">
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-4">
+            @foreach (var book in Model)
+            {
+                <div class="col">
+                    <div style="display: flex; justify-content: center; text-align: center">
+                        <div class="rounded p-3 bg-white bookBox" style="width: 250px;">
+                            <div style="display: flex; justify-content: center;">
+                                <img src="@book.Cover"
+                                     alt="@book.Title"
+                                     class="img-fluid mb-2"
+                                     style="object-fit: cover; height: 200px;" />
+                            </div>
+
+                            <strong class="d-block mb-1" title="@book.Title"
+                                    style="
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 2;
+                                        -webkit-box-orient: vertical;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        height: 2.8em;
+                                        line-height: 1.4em;
+                                            ">
+                                @book.Title
+                            </strong>
+
+                            <em class="text-muted small d-block mb-1">(@book.BookType)</em>
+
+                            <div class="small text-muted mb-2">
+                                Borrowed: @book.DateTaken.ToShortDateString()<br />
+                                Due: @book.DateDue.ToShortDateString()
+                            </div>
+                            @switch (book.BookType)
+                            {
+                                case "Digital":
+                                    <a asp-controller="Books" asp-action="Read" asp-route-id="@book.BookId" class="btn btn-sm btn-primary me-1 d-inline-flex align-items-center">
+                                        <i class="bx bx-book-open bx-tada-hover p-1"></i> Read
+                                    </a>
+
+
+                                    break;
+                                case "Audio":
+                                    <a asp-controller="Books" asp-action="Listen" asp-route-id="@book.BookId" class="btn btn-sm btn-primary me-1" >
+                                        <i class='bx  bx-headphone-alt-2'>Listen</i>  Listen
+                                    </a>
+                                    break;
+                            }
+
+                            <form asp-controller="Borrows" asp-route-id="@book.BorrowId" asp-action="Return" method="post" class="d-inline">
+                                <input type="hidden" name="borrowId" value="@book.BorrowId" />
+                                <button type="submit" class="btn btn-sm btn-danger me-1 d-inline-flex align-items-center"><i class="bx bx-x bx-tada-hover p-1  bx-fw"></i> Return</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

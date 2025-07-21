@@ -1,9 +1,10 @@
-﻿@model EpubReadViewModel
+﻿
+@model EpubReadViewModel
 
 @{
     ViewBag.Title = "Read: " + Model.Title;
 }
-<a asp-action="Details" asp-route-id="@Model.BookId" class="btn btn-link mb-4">Go back</a>
+<a asp-action="All" asp-controller="Borrows" class="btn btn-link mb-4 d-inline-flex align-items-center"><i class="bx bx-chevron-left bx-fw" style="font-size: 1rem;"></i>Go back</a>
 <h2>@Model.Title</h2>
 <h4 class="mt-4">Chapter: <span class="fst-italic">@Model.ChapterTitle</span></h4>
 

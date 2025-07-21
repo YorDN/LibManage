@@ -19,6 +19,21 @@ namespace LibManage.Services.Core
             if (book == null || book.Type != Book.BookType.Digital || string.IsNullOrWhiteSpace(book.BookFilePath))
                 return null;
 
+            var borrow = await context.Borrows
+                .FirstOrDefaultAsync(b => b.BookId == bookId && b.UserId == userId && !b.Returned);
+
+            if (borrow == null)
+                return null;
+
+            if (borrow.DateDue < DateTime.UtcNow)
+            {
+                borrow.Returned = true;
+                borrow.DateReturned = DateTime.UtcNow;
+                context.Borrows.Update(borrow);
+                await context.SaveChangesAsync();
+                return null;
+            }
+
             string relativePath = book.BookFilePath.TrimStart('/');
             string filePath = Path.Combine(env.WebRootPath, relativePath);
 

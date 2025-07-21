@@ -14,7 +14,8 @@ namespace LibManage.Services.Core
 {
     public class BookService(ApplicationDbContext context,
         IRatingService ratingService, 
-        IFileUploadService fileUploadService) : IBookService
+        IFileUploadService fileUploadService,
+        IBorrowService borrowService) : IBookService
     {
         public async Task<bool> CreateBookAsync(AddBookInputModel model)
         {
@@ -115,7 +116,7 @@ namespace LibManage.Services.Core
 
         }
 
-        public async Task<IEnumerable<AllBooksViewModel>?> GetAllBooksAsync(BookFilterOptions options)
+        public async Task<IEnumerable<AllBooksViewModel>?> GetAllBooksAsync(BookFilterOptions options, Guid? userId = null)
         {
             var query = context.Books
                 .Include(b => b.Author)
@@ -138,9 +139,17 @@ namespace LibManage.Services.Core
             {
                 query = query.Where(b => b.Type == parsedType);
             }
-
+            
             if (options.IsTaken.HasValue)
-                query = query.Where(b => b.Borrows.Any(br => br.Returned == false) == options.IsTaken.Value);
+            {
+                query = query.Where(b =>
+                    b.Type == BookType.Physical
+                        ? b.Borrows.Any(br => !br.Returned) == options.IsTaken.Value
+                        : (userId.HasValue && b.Borrows.Any(br => br.UserId == userId && !br.Returned) == options.IsTaken.Value)
+                );
+
+            }
+
 
             query = options.SortBy switch
             {
@@ -159,12 +168,15 @@ namespace LibManage.Services.Core
                 BookType = b.Type.ToString(),
                 Cover = b.Cover,
                 Rating = b.Reviews.Any() ? (int)b.Reviews.Average(r => r.Rating) : 0,
-                IsTaken = b.Borrows.Any(br => br.Returned == false)
+                IsTaken = b.Type == BookType.Physical
+                    ? b.Borrows.Any(br => !br.Returned) 
+                    : (userId.HasValue && b.Borrows.Any(br => br.UserId == userId && !br.Returned)) 
+
             }).ToListAsync();
         }
 
 
-        public async Task<List<AllBooksViewModel>?> GetAllBooksFromAuthorAsync(Guid authorId)
+        public async Task<List<AllBooksViewModel>?> GetAllBooksFromAuthorAsync(Guid authorId, Guid? userId = null)
         {
             Author? author = await context.Authors
                 .FirstOrDefaultAsync(a => a.Id == authorId);
@@ -182,7 +194,10 @@ namespace LibManage.Services.Core
                     Title = b.Title,
                     AuthorName = b.Author.FullName,
                     BookType = b.Type.ToString(),
-                    Cover = b.Cover
+                    Cover = b.Cover,
+                    IsTaken = b.Type == BookType.Physical
+                    ? b.Borrows.Any(br => !br.Returned)
+                    : (userId.HasValue && b.Borrows.Any(br => br.UserId == userId && !br.Returned))
                 })
                 .ToListAsync();
 
@@ -201,22 +216,39 @@ namespace LibManage.Services.Core
             return allAuthorBooks;
         }
 
-        public async Task<BookDetailsViewModel?> GetBookDetailsAsync(Guid id)
+        public async Task<BookDetailsViewModel?> GetBookDetailsAsync(Guid bookId, Guid? userId = null)
         {
-            var book = await context.Books
+            Book? book = await context.Books
             .Include(b => b.Author)
             .Include(b => b.Publisher)
-            .FirstOrDefaultAsync(b => b.Id == id);
+            .FirstOrDefaultAsync(b => b.Id == bookId);
 
             if (book == null)
                 return null;
+            bool isTaken = false;
+            if (book.Type != BookType.Physical)
+            {
+                if (userId != null)
+                {
+                    isTaken = await borrowService.HasActiveBorrowsAsync(userId, bookId);
+                }
+            }
+            else
+            {
+                isTaken = context.Borrows.Any(b => b.BookId == bookId && b.Returned == false);
+            }
 
-            var isTaken = await context.Borrows.AnyAsync(r => r.BookId == id && r.DateDue == null);
+            bool isTakenByUser = false;
+            if (userId != null)
+            {
+                isTakenByUser = await borrowService.HasActiveBorrowsAsync(userId, bookId);
+            }
 
             return new BookDetailsViewModel
             {
                 Book = book,
-                IsTaken = isTaken
+                IsTaken = isTaken,
+                IsTakenByUser = isTakenByUser
             };
 
         }

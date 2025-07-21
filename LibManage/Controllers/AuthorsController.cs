@@ -1,12 +1,14 @@
-﻿using LibManage.Services.Core.Contracts;
+﻿using LibManage.Data.Models.Library;
+using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Authors;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibManage.Web.Controllers
 {
-    public class AuthorsController(IAuthorService authorService) : BaseController
+    public class AuthorsController(IAuthorService authorService, UserManager<User> userManager) : BaseController
     {
         [HttpGet]
         public IActionResult Index()
@@ -45,9 +47,17 @@ namespace LibManage.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            AuthorDetailsViewModel? model = await authorService
-                .GetAuthorDetailsAsync(id);
-            if (model == null) 
+            User? user = await userManager.GetUserAsync(User);
+            AuthorDetailsViewModel? model = null;
+            if (user != null)
+            {
+                model = await authorService.GetAuthorDetailsAsync(id, user.Id);
+            }
+            else
+            {
+                model = await authorService.GetAuthorDetailsAsync(id);
+            }
+            if (model == null)
                 return this.NotFound();
 
             return View(model);
