@@ -19,6 +19,15 @@ public class HomeController : BaseController
     [HttpGet]
     public IActionResult Index()
     {
+        if (User.IsInRole("Admin"))
+        {
+            return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+
+        }
+        if (IsUserAuthenticated())
+        {
+            return this.RedirectToAction("All", "Books");
+        }
         return View();
     }
     [HttpGet]
