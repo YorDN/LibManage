@@ -7,7 +7,7 @@ namespace LibManage.Services.Core.Contracts
 {
     public interface IBookService
     {
-        public Task<IEnumerable<AllBooksViewModel>?> GetAllBooksAsync(BookFilterOptions options, Guid? userId = null);
+        public Task<PaginatedBooksViewModel> GetAllBooksAsync(BookFilterOptions options, Guid? userId = null, int page = 1, int pageSize = 10);
         public Task<AddBookInputModel> GetBookInputModelAsync();
         public Task<bool> CreateBookAsync(AddBookInputModel model);
         public Task<BookDetailsViewModel?> GetBookDetailsAsync(Guid bookId, Guid? userId);

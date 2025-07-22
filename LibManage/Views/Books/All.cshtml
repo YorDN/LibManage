@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Html
 @using Microsoft.AspNetCore.Identity
 
-@model IEnumerable<AllBooksViewModel>
+@model PaginatedBooksViewModel
 
 
 @{
@@ -63,7 +63,7 @@
     </div>
 </form>
 
-@if (!Model.Any())
+@if (!Model.Books.Any())
 {
     <div class="alert alert-info text-center">
         📚 No books available in the library.
@@ -77,7 +77,7 @@
 
 <div class="container py-4">
     <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-4 ">
-        @foreach (var book in Model)
+        @foreach (var book in Model.Books)
         {
             <div class="col">
                 <div style="display: flex; justify-content: center; text-align: center">
@@ -139,4 +139,23 @@
         }
     </div>
 </div>
-
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link"
+                   asp-action="All"
+                   asp-route-page="@i"
+                   asp-route-SearchTerm="@Model.FilterOptions.SearchTerm"
+                   asp-route-MinimumRating="@Model.FilterOptions.MinimumRating"
+                   asp-route-BookType="@Model.FilterOptions.BookType"
+                   asp-route-IsTaken="@Model.FilterOptions.IsTaken"
+                   asp-route-SortBy="@Model.FilterOptions.SortBy"
+                   asp-route-SortDescending="@Model.FilterOptions.SortDescending">
+                    @i
+                </a>
+            </li>
+        }
+    </ul>
+</nav>

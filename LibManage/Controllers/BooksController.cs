@@ -5,31 +5,31 @@ using LibManage.Services.Core;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Audio;
 using LibManage.ViewModels.Books;
-
+using LibManage.ViewModels.Rating;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibManage.Web.Controllers
 {
-    public class BooksController(IBookService bookService, IEpubReaderService epubReaderService, UserManager<User> userManager) : BaseController
+    public class BooksController(IBookService bookService, IEpubReaderService epubReaderService, UserManager<User> userManager, IRatingService ratingService) : BaseController
     {
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> All([FromQuery] BookFilterOptions options)
+        public async Task<IActionResult> All([FromQuery] BookFilterOptions options, int page = 1)
         {
             User? user = await userManager.GetUserAsync(User);
-            IEnumerable<AllBooksViewModel>? books = null;
+            PaginatedBooksViewModel model;
             if (user != null)
             {
-                books = await bookService.GetAllBooksAsync(options, user.Id);
+                model = await bookService.GetAllBooksAsync(options, user.Id, page);
             }
             else
             {
-                books = await bookService.GetAllBooksAsync(options);
+                model = await bookService.GetAllBooksAsync(options, null, page);
             }
-            
-            return View(books);
+
+            return View(model);
         }
 
         [Authorize(Roles = "Admin, Manager")]
@@ -73,7 +73,7 @@ namespace LibManage.Web.Controllers
         }
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Details(Guid id)
+        public async Task<IActionResult> Details(Guid id, int page = 1)
         {
             User? user = await userManager.GetUserAsync(User);
             BookDetailsViewModel? model;
@@ -88,6 +88,10 @@ namespace LibManage.Web.Controllers
             }
             if (model == null)
                 return NotFound();
+
+            model.Reviews = await ratingService.GetReviewsForABookAsync(id);
+            model.TotalReviewCount = await ratingService.GetTotalReviewCountAsync(id);
+            model.CurrentReviewPage = page;
 
             return View(model);
         }
@@ -159,6 +163,23 @@ namespace LibManage.Web.Controllers
                 return NotFound();
 
             return View(model);
+        }
+        [HttpPost]
+        [Route("[Controller]/Reviews/Add")]
+        public async Task<IActionResult> SubmitReview(Guid id, ReviewInputModel input)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction("Details", new { id });
+
+            User? user = await userManager.GetUserAsync(User);
+            if (user is null)
+                return Forbid();
+
+            bool result = await ratingService.AddReviewAsync(input, id, user.Id);
+            if (!result)
+                return NotFound();
+
+            return RedirectToAction("Details", new { id });
         }
 
         private bool IsEpub(IFormFile file)

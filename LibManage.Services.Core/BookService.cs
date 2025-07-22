@@ -6,7 +6,7 @@ using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Audio;
 using LibManage.ViewModels.Books;
-
+using LibManage.ViewModels.Rating;
 using Microsoft.EntityFrameworkCore;
 
 using static LibManage.Data.Models.Library.Book;
@@ -117,7 +117,7 @@ namespace LibManage.Services.Core
 
         }
 
-        public async Task<IEnumerable<AllBooksViewModel>?> GetAllBooksAsync(BookFilterOptions options, Guid? userId = null)
+        public async Task<PaginatedBooksViewModel> GetAllBooksAsync(BookFilterOptions options, Guid? userId = null, int page = 1, int pageSize = 10)
         {
             var query = context.Books
                 .Include(b => b.Author)
@@ -140,17 +140,14 @@ namespace LibManage.Services.Core
             {
                 query = query.Where(b => b.Type == parsedType);
             }
-            
+
             if (options.IsTaken.HasValue)
             {
                 query = query.Where(b =>
                     b.Type == BookType.Physical
                         ? b.Borrows.Any(br => !br.Returned) == options.IsTaken.Value
-                        : (userId.HasValue && b.Borrows.Any(br => br.UserId == userId && !br.Returned) == options.IsTaken.Value)
-                );
-
+                        : (userId.HasValue && b.Borrows.Any(br => br.UserId == userId && !br.Returned) == options.IsTaken.Value));
             }
-
 
             query = options.SortBy switch
             {
@@ -161,19 +158,33 @@ namespace LibManage.Services.Core
                 _ => query.OrderBy(b => b.Title)
             };
 
-            return await query.Select(b => new AllBooksViewModel
-            {
-                Id = b.Id,
-                Title = b.Title,
-                AuthorName = b.Author.FullName,
-                BookType = b.Type.ToString(),
-                Cover = b.Cover,
-                Rating = b.Reviews.Any() ? (int)b.Reviews.Average(r => r.Rating) : 0,
-                IsTaken = b.Type == BookType.Physical
-                    ? b.Borrows.Any(br => !br.Returned) 
-                    : (userId.HasValue && b.Borrows.Any(br => br.UserId == userId && !br.Returned)) 
+            int totalBooks = await query.CountAsync();
 
-            }).ToListAsync();
+            var books = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(b => new AllBooksViewModel
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    AuthorName = b.Author.FullName,
+                    BookType = b.Type.ToString(),
+                    Cover = b.Cover,
+                    Rating = b.Reviews.Any() ? (int)b.Reviews.Average(r => r.Rating) : 0,
+                    IsTaken = b.Type == BookType.Physical
+                        ? b.Borrows.Any(br => !br.Returned)
+                        : (userId.HasValue && b.Borrows.Any(br => br.UserId == userId && !br.Returned))
+                })
+                .ToListAsync();
+
+            return new PaginatedBooksViewModel
+            {
+                Books = books,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalBooks / (double)pageSize),
+                FilterOptions = options
+            };
+
         }
 
 
@@ -255,6 +266,7 @@ namespace LibManage.Services.Core
             Book? book = await context.Books
             .Include(b => b.Author)
             .Include(b => b.Publisher)
+            .Include(b => b.Reviews)
             .FirstOrDefaultAsync(b => b.Id == bookId);
 
             if (book == null)
@@ -273,16 +285,20 @@ namespace LibManage.Services.Core
             }
 
             bool isTakenByUser = false;
+            bool canReview = false;
             if (userId != null)
             {
                 isTakenByUser = await borrowService.HasActiveBorrowsAsync(userId, bookId);
+                canReview = !book.Reviews.Any(r => r.UserId == userId);
             }
 
             return new BookDetailsViewModel
             {
                 Book = book,
                 IsTaken = isTaken,
-                IsTakenByUser = isTakenByUser
+                IsTakenByUser = isTakenByUser,
+                AverageRating = book.Reviews.Any() ? book.Reviews.Average(r => r.Rating) : 0,
+                CanReview = canReview
             };
 
         }
