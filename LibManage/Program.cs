@@ -29,6 +29,7 @@ public class Program
         builder.Services.AddScoped<IPublisherService, PublisherService>();
         builder.Services.AddScoped<IEpubReaderService, EpubReaderService>();
         builder.Services.AddScoped<IBorrowService, BorrowService>();
+        builder.Services.AddScoped<IAdminService, AdminService>();
 
         builder.Services.AddScoped<HttpClient>();
         builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>

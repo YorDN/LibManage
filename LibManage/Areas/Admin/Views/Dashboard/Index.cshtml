@@ -1,76 +1,119 @@
-﻿@using LibManage.ViewModels.Admin
-
+﻿
 @model AdminDashboardViewModel
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<div class="container py-5">
-    <h1 class="mb-4 text-center">Admin Dashboard</h1>
+<div class="container py-3">
+    <h1 class="mb-5 text-center fw-bold display-6 text-dark">Admin Dashboard</h1>
 
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-5 text-white">
         <div class="col-md-3">
-            <div class="card ">
-                <div class="card-body bg-primary">
-                    <h5 class="card-title text-white">Total Books</h5>
-                    <h2 class="card-text fw-bold text-white">@Model.TotalBooks</h2>
+            <a class="card bg-gradient bg-primary shadow rounded-4 border-0 text-white text-decoration-none" asp-action="All" asp-controller="Books" asp-area="" >
+                <div class="card-body text-center">
+                    <h6 class="card-title">Total Books</h6>
+                    <h2 class="fw-bold">@Model.TotalBooks</h2>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="card bg-gradient bg-success shadow rounded-4 border-0 text-white text-decoration-none" asp-action="All" asp-controller="Users" >
+                <div class="card-body text-center">
+                    <h6 class="card-title">Total Users</h6>
+                    <h2 class="fw-bold">@Model.TotalUsers</h2>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="card bg-gradient bg-warning shadow rounded-4 border-0 text-white text-decoration-none" asp-action="All" asp-controller="Authors" asp-area="">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Total Authors</h6>
+                    <h2 class="fw-bold">@Model.TotalAuthors</h2>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a class="card bg-gradient bg-danger shadow rounded-4 border-0 text-white text-decoration-none" asp-action="All" asp-controller="Publishers" asp-area="">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Total Publishers</h6>
+                    <h2 class="fw-bold">@Model.TotalPublishers</h2>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-lg-4">
+            <div class="card shadow-lg rounded-4 border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-3">Entity Overview</h5>
+                    <canvas id="entityBarChart" style="height: 160px;"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body bg-success">
-                    <h5 class="card-title text-white">Total Users</h5>
-                    <h2 class="card-text fw-bold text-white">@Model.TotalUsers</h2>
+
+        <div class="col-lg-4">
+            <div class="card shadow-lg rounded-4 border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-3">Book Type Distribution</h5>
+                    <canvas id="bookTypePieChart" style="height: 160px;"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body bg-warning">
-                    <h5 class="card-title text-white">Total Authors</h5>
-                    <h2 class="card-text fw-bold text-white">@Model.TotalAuthors</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body bg-danger">
-                    <h5 class="card-title text-white">Total Publishers</h5>
-                    <h2 class="card-text fw-bold text-white">@Model.TotalPublishers</h2>
+
+        <div class="col-lg-4">
+            <div class="card shadow-lg rounded-4 border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-3">Reviews Over Time</h5>
+                    <canvas id="reviewsLineChart" style="height: 160px;"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Entity Overview</h5>
-                    <canvas id="entityBarChart"></canvas>
+    <div class="row g-4 mb-5">
+        <div class="row g-4 mt-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Recently Added Books</h5>
+                        <ul class="list-group list-group-flush">
+                            @foreach (var book in Model.RecentBooks)
+                            {
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span><strong>@book.Title</strong> by @book.AuthorName</span>
+                                    <small class="text-muted">@book.DateAdded.ToString("MMM dd")</small>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Statistics</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Most Borrowed: <strong>@Model.MostBorrowedBook</strong></li>
+                            <li class="list-group-item">Top User: <strong>@Model.MostActiveUser</strong></li>
+                            <li class="list-group-item">Active Users(30d): <strong>@Model.ActiveUsersLast30Days</strong></li>
+                            <li class="list-group-item">Repeat Borrowers: <strong>@Model.RepeatBorrowersPercent%</strong></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Book Type Distribution</h5>
-                    <canvas id="bookTypePieChart"></canvas>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <div class="text-center mt-4">
-        <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-outline-dark btn-lg">
+    <div class="text-center">
+        <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-dark btn-lg px-5 py-3 shadow rounded-pill">
             Manage Users
         </a>
     </div>
 </div>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const entityBarChart = new Chart(document.getElementById('entityBarChart'), {
@@ -85,13 +128,22 @@
                     @Model.TotalAuthors,
                     @Model.TotalPublishers
                 ],
-                backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545']
+                backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545'],
+                borderRadius: 10
             }]
         },
         options: {
             responsive: true,
             plugins: {
                 legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
             }
         }
     });
@@ -106,16 +158,48 @@
                     @Model.DigitalBooks,
                     @Model.AudioBooks
                 ],
-                backgroundColor: ['#6c757d', '#0dcaf0', '#6610f2']
+                backgroundColor: ['#6c757d', '#0dcaf0', '#6610f2'],
+                borderWidth: 1
             }]
         },
         options: {
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'bottom'
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 20,
+                        padding: 15
+                    }
                 }
             }
         }
     });
+
+    const reviewsLineChart = new Chart(document.getElementById('reviewsLineChart'), {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.ReviewMonths)),
+            datasets: [{
+                label: 'Reviews',
+                data: @Html.Raw(Json.Serialize(Model.ReviewCounts)),
+                borderColor: '#0d6efd',
+                backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+
 </script>

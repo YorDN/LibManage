@@ -1,26 +1,18 @@
-﻿using LibManage.ViewModels.Admin;
+﻿using LibManage.Services.Core.Contracts;
+using LibManage.ViewModels.Admin;
+using LibManage.Web.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibManage.Web.Areas.Admin.Controllers
 {
-    public class DashboardController : Controller
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+    public class DashboardController(IAdminService adminService) : BaseController
     {
-        [Area("Admin")]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            // Dummy data
-            AdminDashboardViewModel model = new AdminDashboardViewModel
-            {
-                AudioBooks = 10,
-                DigitalBooks = 2,
-                PhysicalBooks = 3,
-                TotalAuthors = 20,
-                TotalBooks = 2,
-                TotalUsers = 200,
-                TotalPublishers = 10
-            };
+            AdminDashboardViewModel model = await adminService.GetAdminDashboardDetailsAsync();
             return View(model);
         }
 
