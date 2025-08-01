@@ -13,7 +13,8 @@ namespace LibManage.Services.Core.Contracts
         public Task<BookDetailsViewModel?> GetBookDetailsAsync(Guid bookId, Guid? userId);
         public Task<DeleteBookViewModel?> GetDeletedBookDetailsAsync(Guid id);
         public Task<bool> DeleteBookAsync(Guid id);
-        public Task<List<AllBooksViewModel>?> GetAllBooksFromAuthorAsync(Guid authorId, Guid? userId = null); 
+        public Task<List<AllBooksViewModel>?> GetAllBooksFromAuthorAsync(Guid authorId, Guid? userId = null);
+        public Task<List<AllBooksViewModel>?> GetAllBooksFromPublisherAsync(Guid publisherId, Guid? userId = null);
         public Task<bool> UpdateBookAsync(EditBookInputModel model);
         public Task<EditBookInputModel?> GetBookEditModelAsync(Guid id);
         public Task<Book?> GetBookByIdAsync(Guid id);

@@ -192,10 +192,8 @@ namespace LibManage.Services.Core
         {
             Author? author = await context.Authors
                 .FirstOrDefaultAsync(a => a.Id == authorId);
-
             if( author == null )
                 return null;
-
             List<AllBooksViewModel>? allAuthorBooks = await context.Books
                 .Include(d => d.Author)
                 .AsNoTracking()
@@ -212,20 +210,49 @@ namespace LibManage.Services.Core
                     : (userId.HasValue && b.Borrows.Any(br => br.UserId == userId && !br.Returned))
                 })
                 .ToListAsync();
-
             if (allAuthorBooks is null)
                 return allAuthorBooks;
-
             for (int i = 0; i < allAuthorBooks.Count(); i++)
             {
-                double? rating = await ratingService.GetRatingForABookByIdAsync(allAuthorBooks.ToList()[i].Id);
+                double? rating = await ratingService.GetRatingForABookByIdAsync(allAuthorBooks[i].Id);
                 if (rating != null)
-                {
-                    allAuthorBooks.ToList()[i].Rating = (int)rating;
-                }
+                    allAuthorBooks[i].Rating = (int)rating;
             }
 
             return allAuthorBooks;
+        }
+
+        public async Task<List<AllBooksViewModel>?> GetAllBooksFromPublisherAsync(Guid publisherId, Guid? userId = null)
+        {
+            Publisher? publisher = await context.Publishers
+                .FirstOrDefaultAsync(p => p.Id == publisherId);
+            if (publisher == null)
+                return null;
+            List<AllBooksViewModel>? publishedBooks = await context.Books
+                .Include(p => p.Publisher)
+                .AsNoTracking()
+                .Where(b => b.Publisher.Id == publisherId)
+                .Select(b => new AllBooksViewModel()
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    AuthorName = b.Author.FullName,
+                    BookType = b.Type.ToString(),
+                    Cover = b.Cover,
+                    IsTaken = b.Type == BookType.Physical
+                    ? b.Borrows.Any(br => !br.Returned)
+                    : (userId.HasValue && b.Borrows.Any(br => br.UserId == userId && !br.Returned))
+                }).ToListAsync();
+            if (publishedBooks == null)
+                return null;
+            for (int i = 0; i < publishedBooks.Count; i++)
+            {
+                double? rating = await ratingService.GetRatingForABookByIdAsync(publishedBooks[i].Id);
+                if (rating != null)
+                    publishedBooks[i].Rating = (int) rating;
+            }
+
+            return publishedBooks;
         }
 
         public async Task<AudioBookPlayerViewModel?> GetAudioBookPlayerViewModelAsync(Guid id)

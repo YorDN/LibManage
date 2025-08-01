@@ -2,13 +2,14 @@
 using LibManage.Data;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
+using LibManage.ViewModels.Books;
 using LibManage.ViewModels.Publishers;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace LibManage.Services.Core
 {
-    public class PublisherService(ApplicationDbContext context, IFileUploadService fileUploadService) : IPublisherService
+    public class PublisherService(ApplicationDbContext context, IFileUploadService fileUploadService, IBookService bookService) : IPublisherService
     {
         public async Task<bool> AddPublisherAsync(AddPublisherInputModel model)
         {
@@ -52,6 +53,28 @@ namespace LibManage.Services.Core
                 })
                 .ToListAsync();
             return publishers;
+        }
+
+        public async Task<PublisherDetailsViewModel?> GetPublisherDetailsAsync(Guid id, Guid? userId = null)
+        {
+            Publisher? publisher = await context.Publishers
+                .FirstOrDefaultAsync(p => p.Id == id);  
+            if (publisher == null) 
+                return null;
+            List<AllBooksViewModel>? allPublishedBooks = await bookService.GetAllBooksFromPublisherAsync(id, userId);
+            if (allPublishedBooks == null)
+                return null;
+            PublisherDetailsViewModel model = new PublisherDetailsViewModel() 
+            {
+                Id = publisher.Id,
+                Name= publisher.Name,
+                Country = publisher.Country,
+                Description = publisher.Description,
+                Logo = publisher.LogoUrl,
+                Website = publisher.Website,
+                PublishedBooks = allPublishedBooks
+            };
+            return model;
         }
     }
 }

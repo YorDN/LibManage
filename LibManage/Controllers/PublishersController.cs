@@ -1,13 +1,15 @@
-﻿using LibManage.Services.Core.Contracts;
+﻿using LibManage.Data.Models.Library;
+using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Publishers;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LibManage.Web.Controllers
 {
-    public class PublishersController (ICountryService countryService, IPublisherService publisherService) : BaseController
+    public class PublishersController (ICountryService countryService, IPublisherService publisherService, UserManager<User> userManager) : BaseController
     {
         [AllowAnonymous]
         [HttpGet]
@@ -59,5 +61,24 @@ namespace LibManage.Web.Controllers
                 .GetAllPublishersAsync();
             return View(model);
         } 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            User? user = await userManager.GetUserAsync(User);
+            PublisherDetailsViewModel? model = null;
+            if (user != null)
+            {
+                model = await publisherService.GetPublisherDetailsAsync(id, user.Id);
+            }
+            else
+            {
+                model = await publisherService.GetPublisherDetailsAsync(id);
+            }
+            if (model == null)
+                return this.NotFound();
+
+            return View(model);
+        }
     }
 }

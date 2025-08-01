@@ -25,7 +25,7 @@ else
         @foreach (var publisher in Model)
         {
             <div class="col">
-                <a asp-controller="Authors" asp-action="Details" asp-route-id="@publisher.Id"
+                <a asp-controller="Publishers" asp-action="Details" asp-route-id="@publisher.Id"
                    class="text-decoration-none text-dark">
                     <div class="card h-100 shadow-sm">
                         <img src="@publisher.Photo"
