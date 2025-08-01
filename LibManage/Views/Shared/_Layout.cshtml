@@ -37,6 +37,10 @@
                                 Books
                             </a>
                             <ul class="dropdown-menu">
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                {
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Books" asp-action="Add">Add</a></li>
+                                }
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Borrows" asp-action="All">Borrowed</a></li>
@@ -49,6 +53,10 @@
                                 Authors
                             </a>
                             <ul class="dropdown-menu">
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                {
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Authors" asp-action="Add">Add</a></li>
+                                }
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Authors" asp-action="All">All Authors</a></li>
                             </ul>
                         </li>
@@ -57,6 +65,10 @@
                                 Publishers
                             </a>
                             <ul class="dropdown-menu">
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                                {
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Publishers" asp-action="Add">Add</a></li>
+                                }
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Publishers" asp-action="All">All Publishers</a></li>
                             </ul>
                         </li>

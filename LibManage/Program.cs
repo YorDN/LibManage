@@ -5,6 +5,8 @@ using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
 using LibManage.Services.Core;
 using LibManage.Common;
+using LibManage.Web.Areas.Identity.Custom;
+using LibManage.Web.Areas.Identity.Middleware;
 
 namespace LibManage.Web;
 
@@ -20,6 +22,7 @@ public class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+        builder.Services.AddScoped<SignInManager<User>, LibrarySignInManager>();
         builder.Services.AddScoped<IBookService, BookService>();
         builder.Services.AddScoped<IRatingService, RatingService>();
         builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService>();
@@ -40,8 +43,8 @@ public class Program
             options.Password.RequiredLength = 8;
         })
                 .AddDefaultUI()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
-            //.AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
 
 
@@ -71,6 +74,7 @@ public class Program
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 
+        app.UseMiddleware<ActiveUserMiddleware>();
         app.UseRouting();
 
         app.UseAuthorization();

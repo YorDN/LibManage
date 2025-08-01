@@ -54,6 +54,7 @@ namespace LibManage.Web.Areas.Identity.Pages.Account
         /// </summary>
         [TempData]
         public string ErrorMessage { get; set; }
+        public string? DeactivationMessage { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -83,6 +84,7 @@ namespace LibManage.Web.Areas.Identity.Pages.Account
             /// </summary>
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -90,6 +92,12 @@ namespace LibManage.Web.Areas.Identity.Pages.Account
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
+            }
+            
+            var message = HttpContext.Request.Query["message"];
+            if (message == "deactivated")
+            {
+                DeactivationMessage = "Your account has been deactivated.";
             }
 
             returnUrl ??= Url.Content("~/");

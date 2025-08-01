@@ -87,5 +87,29 @@ namespace LibManage.Services.Core
 
             return model;
         }
+
+        public async Task<(IEnumerable<ManageUserViewModel> Users, int TotalCount)> GetAllUsersAsync(int page, int pageSize)
+        {
+            IEnumerable<ManageUserViewModel> users = await context.Users
+                .Where(u => u.IsActive)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(u => new ManageUserViewModel()
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    FullName = u.UserName,
+                    Role = context.UserRoles
+                        .Where(ur => ur.UserId == u.Id)
+                        .Select(ur => context.Roles.First(r => r.Id == ur.RoleId).Name)
+                        .FirstOrDefault(),
+                    IsDeleted = u.IsActive,
+                }).ToListAsync();
+
+            int count = await context.Users
+                .CountAsync(u => u.IsActive);
+
+            return(users, count);
+        }
     }
 }
