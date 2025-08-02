@@ -11,5 +11,7 @@ namespace LibManage.Services.Core.Contracts
         public Task<PublisherDetailsViewModel?> GetPublisherDetailsAsync(Guid id, Guid? userId = null);
         public Task<EditPublisherInputModel?> GetPublisherEditInfoAsync(Guid id);
         public Task<bool> EditPublisherAsync(EditPublisherInputModel model);
+        public Task<DeletePublisherViewModel?> GetDeletePublisherInfoAsync(Guid id);
+        public Task<bool> DeletePublisherAsync(Guid id);
     }
 }

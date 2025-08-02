@@ -42,6 +42,41 @@ namespace LibManage.Services.Core
             return true;
         }
 
+        public async Task<bool> DeletePublisherAsync(Guid id)
+        {
+            Publisher? publisher = await context.Publishers
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if(publisher == null)
+                return false;
+
+            using var transaction = await context.Database.BeginTransactionAsync();
+
+            List<Book> books = publisher.Books.ToList();
+            foreach (var book in books)
+            {
+                bool success = await bookService.DeleteBookAsync(book.Id);
+                if (!success)
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+            }
+            if (!string.IsNullOrEmpty(publisher.LogoUrl) && !publisher.LogoUrl.EndsWith("DefaultPublisher.png"))
+            {
+                bool photoDeleted = await fileUploadService.DeleteFileAsync(publisher.LogoUrl);
+                if (!photoDeleted)
+                {
+                    await transaction.RollbackAsync();
+                    return false;
+                }
+            }
+
+            context.Publishers.Remove(publisher);
+            await context.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return true;
+        }
+
         public async Task<bool> EditPublisherAsync(EditPublisherInputModel model)
         {
            Publisher? publisher = await context.Publishers
@@ -78,6 +113,22 @@ namespace LibManage.Services.Core
                 })
                 .ToListAsync();
             return publishers;
+        }
+
+        public async Task<DeletePublisherViewModel?> GetDeletePublisherInfoAsync(Guid id)
+        {
+            Publisher? publisher = await context.Publishers
+                .Include(p => p.Books)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (publisher == null)
+                return null;
+            return new DeletePublisherViewModel()
+            {
+                Id = publisher.Id,
+                Name = publisher.Name,
+                BooksCount = publisher.Books.Count,
+                Logo = publisher.LogoUrl,
+            };
         }
 
         public async Task<PublisherDetailsViewModel?> GetPublisherDetailsAsync(Guid id, Guid? userId = null)

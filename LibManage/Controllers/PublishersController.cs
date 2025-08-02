@@ -1,5 +1,7 @@
 ﻿using LibManage.Data.Models.Library;
+using LibManage.Services.Core;
 using LibManage.Services.Core.Contracts;
+using LibManage.ViewModels.Authors;
 using LibManage.ViewModels.Publishers;
 
 using Microsoft.AspNetCore.Authorization;
@@ -115,6 +117,29 @@ namespace LibManage.Web.Controllers
             if (!result)
                 return this.RedirectToAction(nameof(Edit), new { id = model.Id });
             return this.RedirectToAction(nameof(Details), new { id = model.Id });
+        }
+        [Authorize(Roles = "Admin, Manager")]
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            DeletePublisherViewModel? model = await publisherService.GetDeletePublisherInfoAsync(id);
+            if (model == null)
+                return this.NotFound();
+            return View(model);
+        }
+        [Authorize(Roles = "Admin, Manager")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(DeletePublisherViewModel model)
+        {
+            if (!model.ConfirmDeleteBooks)
+            {
+                TempData["Error"] = "Publisher could not be deleted. They may have associated books.";
+                return this.RedirectToAction(nameof(Details), new { id = model.Id });
+            }
+            bool result = await publisherService.DeletePublisherAsync(model.Id);
+            if (!result)
+                return this.NotFound();
+            return RedirectToAction("All");
         }
     }
 }
