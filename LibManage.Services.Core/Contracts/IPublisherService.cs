@@ -1,4 +1,6 @@
-﻿using LibManage.ViewModels.Publishers;
+﻿using LibManage.Data.Models.DTOs;
+using LibManage.ViewModels.Authors;
+using LibManage.ViewModels.Publishers;
 
 namespace LibManage.Services.Core.Contracts
 {

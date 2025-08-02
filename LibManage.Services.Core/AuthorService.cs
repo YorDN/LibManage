@@ -1,5 +1,6 @@
 ﻿using LibManage.Common;
 using LibManage.Data;
+using LibManage.Data.Models.DTOs;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Authors;
@@ -108,19 +109,46 @@ namespace LibManage.Services.Core
             return true;
         }
 
-        public async Task<IEnumerable<AllAuthorsViewModel>> GetAllAuthorsAsync()
+        public async Task<PaginatiedAuthorsViewModel> GetAllAuthorsAsync(AuthorFilterOptions options, int page = 1, int pageSize = 10)
         {
-            IEnumerable<AllAuthorsViewModel> authors = await context.Authors
-                .OrderBy(a => a.WrittenBooks.Count())
-                .ThenBy(a => a.FullName)
-                .Select(a => new AllAuthorsViewModel()
+            var query = context.Authors
+                .Include(a => a.WrittenBooks)
+                .AsNoTracking()
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(options.SearchTerm))
+                query = query.Where(b =>
+                    b.FullName.Contains(options.SearchTerm) 
+                    || b.WrittenBooks.Any(b => b.Title.Contains(options.SearchTerm)));
+
+            query = options.SortBy switch
+            {
+                "Name" => options.SortDescending ? query.OrderByDescending(b => b.FullName) : query.OrderBy(b => b.FullName),
+                "Books Written" => options.SortDescending
+                    ? query.OrderByDescending(b => b.WrittenBooks.Count())
+                    : query.OrderBy(b => b.WrittenBooks.Count()),
+                _ => query.OrderBy(b => b.FullName)
+            };
+
+            int totalAuthors = await query.CountAsync();
+
+            var authors = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(a => new AllAuthorsViewModel
                 {
                     Id = a.Id,
                     Name = a.FullName,
-                    Photo = a.Photo,
-                })
-                .ToListAsync();
-            return authors;
+                    Photo = a.Photo
+                }).ToListAsync();
+
+            return new PaginatiedAuthorsViewModel
+            {
+                Authors = authors,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalAuthors / (double)pageSize),
+                FilterOptions = options
+            };
         }
 
         public async Task<DeleteAuthorViewModel?> GetAuthorDeleteInfoAsync(Guid id)

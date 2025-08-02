@@ -1,17 +1,53 @@
 ﻿@using LibManage.ViewModels.Authors
 
-@model IEnumerable<AllAuthorsViewModel>
+@model PaginatiedAuthorsViewModel
 
 @{
     ViewData["Title"] = "All Authors";
 }
 
-<h2 class="mb-4">Authors</h2>
+<h2 class="mb-4 justify-content-center align-items-center display-7">Authors</h2>
 
-@if (!Model.Any())
+<form asp-action="All" method="get" class="row g-3 mb-4 align-items-center">
+    <div class="col-md-3">
+        <input type="text" name="SearchTerm" class="form-control" placeholder="Search by Name or Book Title" value="@Context.Request.Query["SearchTerm"]" />
+    </div>
+
+    <div class="col-md-3">
+        <select name="SortBy" class="form-select">
+            <option value="Name" selected="@("Name" == Context.Request.Query["SortBy"])">Sort by Name</option>
+            <option value="Books Written" selected="@("BooksWritten" == Context.Request.Query["SortBy"])">Sort by Books Written</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <select name="PageSize" class="form-select">
+            @{
+                var currentPageSize = Context.Request.Query["PageSize"].ToString();
+            }
+            <option value="5" selected="@(currentPageSize == "5")">5 per page</option>
+            <option value="10" selected="@(string.IsNullOrEmpty(currentPageSize) || currentPageSize == "10")">10 per page</option>
+            <option value="20" selected="@(currentPageSize == "20")">20 per page</option>
+            <option value="50" selected="@(currentPageSize == "50")">50 per page</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" name="SortDescending" value="true"
+            @(Context.Request.Query["SortDescending"] == "true" ? "checked" : "") id="sortDescCheck" />
+            <label class="form-check-label" for="sortDescCheck">Descending</label>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Apply</button>
+    </div>
+</form>
+
+
+@if (!Model.Authors.Any())
 {
     <div class="alert alert-info text-center">
-         No authors available in the library.
+        No authors available in the library.
         <br />
         @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
         {
@@ -21,23 +57,43 @@
 }
 else
 {
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        @foreach (var author in Model)
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">
+        @foreach (var author in Model.Authors)
         {
             <div class="col">
                 <a asp-controller="Authors" asp-action="Details" asp-route-id="@author.Id"
-                   class="text-decoration-none text-dark">
-                    <div class="card h-100 shadow-sm">
-                        <img src="@author.Photo"
-                             class="card-img-top"
-                             alt="@author.Name"
-                             style="object-fit: cover; height: 250px;" />
-                        <div class="card-body text-center">
-                            <h5 class="card-title">@author.Name</h5>
-                        </div>
-                    </div>
+                   class="text-decoration-none text-dark d-block text-center p-3 border rounded bg-white shadow-sm h-100 hover-shadow transition">
+                    
+                    <img src="@author.Photo"
+                         alt="@author.Name"
+                         class="rounded-circle mb-2 shadow-sm"
+                         style="width: 140px; height: 140px; object-fit: cover;" />
+                    
+                    <div class="fw-semibold fs-6 mt-2">@author.Name</div>
                 </a>
             </div>
         }
     </div>
 }
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-action="All" asp-route-page="@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+<style>
+    .hover-shadow:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+        transform: translateY(-2px);
+        transition: 0.2s ease-in-out;
+    }
+
+    .transition {
+        transition: all 0.2s ease-in-out;
+    }
+</style>
