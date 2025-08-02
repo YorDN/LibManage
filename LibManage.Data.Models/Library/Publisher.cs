@@ -21,7 +21,6 @@ namespace LibManage.Data.Models.Library
         [Comment("The logo of the publisher")]
         public required string LogoUrl { get; set; }
 
-        [MaxLength(1000)]
         [Comment("The description of the publisher")]
         public string? Description { get; set; }
 

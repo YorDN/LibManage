@@ -14,7 +14,6 @@ namespace LibManage.ViewModels.Authors
         public string FullName { get; set; } = null!;
 
         [Display(Name = "Biography")]
-        [MaxLength(2000)]
         public string? Biography { get; set; }
 
         [Display(Name = "Date of Birth")]

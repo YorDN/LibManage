@@ -64,7 +64,6 @@ namespace LibManage.Data.Models.Library
         // This only applies for the audio books.
         public TimeSpan? Duration { get; set; }
 
-        [MaxLength(1000)]
         [Comment("A short description of the book")]
         public string? Description { get; set; }
 

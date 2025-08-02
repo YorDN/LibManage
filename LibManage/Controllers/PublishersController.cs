@@ -80,5 +80,41 @@ namespace LibManage.Web.Controllers
 
             return View(model);
         }
+        [Authorize(Roles = "Admin, Manager")]
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            EditPublisherInputModel? model = await publisherService.GetPublisherEditInfoAsync(id);
+            if (model == null)
+                return this.NotFound();
+            var countries = await countryService
+                .GetCountriesAsync();
+            var selectItems = countries.Select(c => new SelectListItem
+            {
+                Text = c.name.common,
+                Value = c.cca2.ToUpper()
+            }).ToList();
+
+            var flagsDict = countries.ToDictionary(
+                c => c.cca2.ToUpper(),
+                c => c.flags.png
+            );
+
+            ViewBag.Countries = selectItems;
+            ViewBag.CountryFlags = flagsDict;
+             
+            return View(model);
+        }
+        [Authorize(Roles = "Admin, Manager")]
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditPublisherInputModel model)
+        {
+            if (!ModelState.IsValid)
+                return this.RedirectToAction(nameof(Edit), new { id = model.Id });
+            bool result = await publisherService.EditPublisherAsync(model);
+            if (!result)
+                return this.RedirectToAction(nameof(Edit), new { id = model.Id });
+            return this.RedirectToAction(nameof(Details), new { id = model.Id });
+        }
     }
 }

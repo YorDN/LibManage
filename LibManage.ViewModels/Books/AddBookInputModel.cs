@@ -32,7 +32,6 @@ namespace LibManage.ViewModels.Books
 
         public TimeSpan? Duration { get; set; }
 
-        [MaxLength(1000)]
         public string? Description { get; set; }
 
         public IFormFile? CoverFile { get; set; }

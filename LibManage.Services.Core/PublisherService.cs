@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibManage.Services.Core
 {
-    public class PublisherService(ApplicationDbContext context, IFileUploadService fileUploadService, IBookService bookService) : IPublisherService
+    public class PublisherService(ApplicationDbContext context, 
+        IFileUploadService fileUploadService, 
+        IBookService bookService) : IPublisherService
     {
         public async Task<bool> AddPublisherAsync(AddPublisherInputModel model)
         {
@@ -36,6 +38,29 @@ namespace LibManage.Services.Core
             };
 
             await context.Publishers.AddAsync(publisher);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> EditPublisherAsync(EditPublisherInputModel model)
+        {
+           Publisher? publisher = await context.Publishers
+                .FirstOrDefaultAsync(p => p.Id == model.Id);
+            if (publisher == null)
+                return false;
+            publisher.Name = model.Name;
+            publisher.Description = model.Description;
+            publisher.Country = model.Country;
+            publisher.Website = model.Website;
+            if (model.NewLogo != null)
+            {
+                bool deletionResult = await fileUploadService.DeleteFileAsync(publisher.LogoUrl);
+                if (!deletionResult)
+                    return false;
+                publisher.LogoUrl = await fileUploadService
+                    .UploadFileAsync(model.NewLogo, Subfolders.AuthorProfilePictures);
+            }
+
             await context.SaveChangesAsync();
             return true;
         }
@@ -74,6 +99,24 @@ namespace LibManage.Services.Core
                 Website = publisher.Website,
                 PublishedBooks = allPublishedBooks
             };
+            return model;
+        }
+
+        public async Task<EditPublisherInputModel?> GetPublisherEditInfoAsync(Guid id)
+        {
+            Publisher? publisher = await context.Publishers
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if(publisher == null)
+                return null;
+            EditPublisherInputModel model = new EditPublisherInputModel()
+            {
+                Id = publisher.Id,
+                Country = publisher.Country,
+                Description = publisher.Description,
+                ExistingLogoPath = publisher.LogoUrl,
+                Name = publisher.Name,
+                Website = publisher.Website
+            }; 
             return model;
         }
     }
