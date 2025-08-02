@@ -89,7 +89,7 @@ namespace LibManage.Web.Controllers
             if (model == null)
                 return NotFound();
 
-            model.Reviews = await ratingService.GetReviewsForABookAsync(id);
+            model.Reviews = await ratingService.GetReviewsForABookAsync(id, user == null ? Guid.NewGuid() : user.Id);
             model.TotalReviewCount = await ratingService.GetTotalReviewCountAsync(id);
             model.CurrentReviewPage = page;
 

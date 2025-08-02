@@ -170,7 +170,7 @@ namespace LibManage.Services.Core
                     AuthorName = b.Author.FullName,
                     BookType = b.Type.ToString(),
                     Cover = b.Cover,
-                    Rating = b.Reviews.Any() ? (int)b.Reviews.Average(r => r.Rating) : 0,
+                    Rating = b.Reviews.Any(r => r.IsApproved) ? (int)b.Reviews.Average(r => r.Rating) : 0,
                     IsTaken = b.Type == BookType.Physical
                         ? b.Borrows.Any(br => !br.Returned)
                         : (userId.HasValue && b.Borrows.Any(br => br.UserId == userId && !br.Returned))
@@ -324,7 +324,7 @@ namespace LibManage.Services.Core
                 Book = book,
                 IsTaken = isTaken,
                 IsTakenByUser = isTakenByUser,
-                AverageRating = book.Reviews.Any() ? book.Reviews.Average(r => r.Rating) : 0,
+                AverageRating = book.Reviews.Any(r => r.IsApproved) ? book.Reviews.Average(r => r.Rating) : 0,
                 CanReview = canReview
             };
 

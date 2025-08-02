@@ -53,12 +53,12 @@ namespace LibManage.Services.Core
                 return 0;
 
             return await context.Reviews
-                .Where(r => r.BookId == bookId)
+                .Where(r => r.BookId == bookId && r.IsApproved)
                 .Select(r => (double?)r.Rating)
                 .AverageAsync();
         }
 
-        public async Task<List<ReviewViewModel>> GetReviewsForABookAsync(Guid bookId, int page = 1, int pageSize = 5)
+        public async Task<List<ReviewViewModel>> GetReviewsForABookAsync(Guid bookId, Guid currentUserId, int page = 1, int pageSize = 5)
         {
             Book? book = await context.Books
                 .Include (book => book.Reviews)
@@ -69,6 +69,7 @@ namespace LibManage.Services.Core
                 return new List<ReviewViewModel>();
 
             return book.Reviews
+                .Where(r => r.BookId == book.Id)
                 .OrderByDescending (r => r.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -79,13 +80,18 @@ namespace LibManage.Services.Core
                     CreatedAt = r.CreatedAt,
                     Pfp = r.User.ProfilePicture,
                     Rating = r.Rating,
-                    Username = r.User.UserName ?? "Unknown"
+                    Username = r.User.UserName ?? "Unknown",
+                    IsApproved = r.IsApproved,
+                    IsAuthor = r.UserId == currentUserId
+
                 })
                 .ToList();
         }
         public async Task<int> GetTotalReviewCountAsync(Guid bookId)
         {
-            return await context.Reviews.CountAsync(r => r.BookId == bookId);
+            return await context.Reviews
+                .Where(r => r.BookId == bookId && r.IsApproved)
+                .CountAsync();
         }
 
     }

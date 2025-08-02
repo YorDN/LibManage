@@ -35,6 +35,9 @@ namespace LibManage.Data.Models.Library
         [Comment("The comment of the review")]
         public string? Comment { get; set; }
 
+        [Comment("Is the review approved by a manager?")]
+        public bool IsApproved { get; set; } = false;
+
         [Comment("When was the review created")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

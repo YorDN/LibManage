@@ -141,34 +141,45 @@
         {
             foreach (var review in Model.Reviews)
             {
-                <div class="border rounded p-3 mb-3 bg-light">
-                    <div class="d-flex align-items-center mb-2">
-                        <img src="@review.Pfp" alt="pfp" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" />
-                        <div>
-                            <strong>@review.Username</strong><br />
-                            <small class="text-muted">@review.CreatedAt.ToShortDateString()</small>
-                        </div>
-                    </div>
-
-                    <div class="text-warning mb-2">
-                        @for (int i = 1; i <= 5; i++)
+                if (review.IsApproved || review.IsAuthor)
+                {
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        @if (!review.IsApproved && review.IsAuthor)
                         {
-                            if (i <= review.Rating)
+                            <span class="badge bg-warning text-dark mb-3">Pending Approval</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success text-white mb-3">Approved</span>
+                        }
+                        <div class="d-flex align-items-center mb-2">
+                            <img src="@review.Pfp" alt="pfp" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" />
+                            <div>
+                                <strong>@review.Username @(review.IsAuthor ? "(You)" : "")</strong><br />
+                                <small class="text-muted">@review.CreatedAt.ToShortDateString()</small>
+                            </div>
+                        </div>
+
+                        <div class="text-warning mb-2">
+                            @for (int i = 1; i <= 5; i++)
                             {
-                                <i class="bi bi-star-fill"></i>
+                                if (i <= review.Rating)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
                             }
-                            else
-                            {
-                                <i class="bi bi-star"></i>
-                            }
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(review.Comment))
+                        {
+                            <p class="mb-0">@review.Comment</p>
                         }
                     </div>
-
-                    @if (!string.IsNullOrWhiteSpace(review.Comment))
-                    {
-                        <p class="mb-0">@review.Comment</p>
-                    }
-                </div>
+                }
             }
 
             int pageSize = 5;
