@@ -1,2 +1,2 @@
-![Logo](https://github.com/YorDN/LibManage/blob/master/LibManage%20Logo.png?raw=true)
+![Logo]([https://github.com/YorDN/LibManage/blob/master/LibManage%20Logo.png?raw=true](https://github.com/YorDN/LibManage/blob/master/LibManage%20Logo.png?raw=true))
 # LibManage
