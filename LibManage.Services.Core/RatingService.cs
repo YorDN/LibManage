@@ -2,9 +2,11 @@
 using LibManage.Data;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
+using LibManage.ViewModels.Manager;
 using LibManage.ViewModels.Rating;
 
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace LibManage.Services.Core
 {
@@ -35,6 +37,28 @@ namespace LibManage.Services.Core
             context.Reviews.Add(review);
             await context.SaveChangesAsync();
 
+            return true;
+        }
+
+        public async Task<bool> ApproveReviewAsync(Guid id)
+        {
+            Review? review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
+            if (review == null || review.IsApproved)
+                return false;
+            review.IsApproved = true;
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteReviewAsync(Guid id)
+        {
+
+            Review? review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
+            if (review == null )
+                return false;
+            
+            context.Reviews.Remove(review);
+            await context.SaveChangesAsync();
             return true;
         }
 
@@ -94,5 +118,22 @@ namespace LibManage.Services.Core
                 .CountAsync();
         }
 
+        public async Task<List<UnapprovedReviewViewModel>> GetUnapprovedReviewsAsync()
+        {
+            return await context.Reviews
+                .Include(r => r.Book)
+                .Include(r => r.User)
+                .Where(r => !r.IsApproved)
+                .OrderByDescending(r => r.CreatedAt)
+                .Select(r => new UnapprovedReviewViewModel()
+                {
+                    Id = r.Id,
+                    Comment = r.Comment,    
+                    BookTitle = r.Book.Title,
+                    CreatedAt = r.CreatedAt,
+                    Rating = r.Rating,
+                    Username= r.User.UserName ?? "Unknown",
+                }).ToListAsync();
+        }
     }
 }
