@@ -1,8 +1,128 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome to LibManage";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="bg-light text-dark py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold">Welcome to <span class="text-primary">LibManage</span></h1>
+                <p class="lead mb-4">Your personal digital library — organized, social, and easy to use.</p>
+                <div class="d-flex justify-content-center justify-content-lg-start">
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg me-3">Log In</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary btn-lg">Register</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                @* <div class="ratio ratio-16x9 shadow rounded overflow-hidden">
+                    <video autoplay muted loop playsinline>
+                        <source src="~/videos/landing-preview.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div> *@
+                <img src="~/images/landing-screenshot.png" class="img-fluid rounded shadow" alt="App Preview" />
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <i class="bi bi-journal-richtext display-4 text-primary mb-3"></i>
+                <h5>Explore Books</h5>
+                <p>Browse thousands of books with user reviews and ratings.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="bi bi-star-half display-4 text-warning mb-3"></i>
+                <h5>Review</h5>
+                <p>Express your oppinion on a piece of art.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <i class="bi bi-check2-circle display-4 text-success mb-3"></i>
+                <h5>Smart Borrowing</h5>
+                <p>Track due dates and manage your borrowed books effortlessly.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">FAQ</h2>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faqOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                        How do I borrow a book?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        After logging in, go to a book page and click "Borrow". The system tracks your due date automatically.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faqTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                        Can I leave a review?
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Yes! Log into your account and go to your desired book's page. There you can leave a review that will be approved by a manager.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faqThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                        Can I read/listen to books I have borrowed?
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Yes! If your borrowed book is either digital or audio you can read/listen them through the borrowed books page.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="faqThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                        Can a book be borrowed twice at the same time by different users?
+                    </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        If the book is either digital or audio, it can be borrowed twice at the same time by different people. If the book is physical it CAN NOT be borrowed at the same time.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-light py-5 m-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Technologies Used</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-2 mb-3"><span class="badge bg-primary p-3">ASP.NET Core</span></div>
+            <div class="col-md-2 mb-3"><span class="badge bg-success p-3">Entity Framework</span></div>
+            <div class="col-md-2 mb-3"><span class="badge bg-warning p-3">Bootstrap 5</span></div>
+            <div class="col-md-2 mb-3"><span class="badge bg-danger p-3">SQL Server</span></div>
+        </div>
+    </div>
+</section>
+
+<section class="text-center py-5">
+    <div class="container">
+        <h2 class="mb-3">Want to see the code?</h2>
+        <p class="mb-4">Check out the full project on GitHub and contribute!</p>
+        <a href="https://github.com/YorDN/LibManage" target="_blank" class="btn btn-dark btn-lg">
+            <i class="bi bi-github me-2"></i> View on GitHub
+        </a>
+    </div>
+</section>
