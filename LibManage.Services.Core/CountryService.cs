@@ -1,7 +1,7 @@
 ﻿using LibManage.Data.Models.DTOs;
 using LibManage.Services.Core.Contracts;
 
-using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace LibManage.Services.Core
 {
@@ -11,17 +11,22 @@ namespace LibManage.Services.Core
         {
             try
             {
-                var response = await http.GetFromJsonAsync<List<CountryApiModel>>(
+                var response = await http.GetAsync(
                     "https://restcountries.com/v3.1/all?fields=name,cca2,flags");
 
-                return response?.OrderBy(c => c.name.common).ToList() ?? new();
+                response.EnsureSuccessStatusCode();
+
+                var content = await response.Content.ReadAsStringAsync();
+                var countries = JsonSerializer.Deserialize<List<CountryApiModel>>(content);
+
+                return countries?.OrderBy(c => c.name.common).ToList() ?? new();
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex) when (ex is HttpRequestException or JsonException)
             {
-                Console.WriteLine($"HTTP error: {ex.Message}");
+                Console.WriteLine($"Error fetching countries: {ex.Message}");
                 return new List<CountryApiModel>();
             }
-
         }
+
     }
 }
