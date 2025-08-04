@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibManage.Data.Models", "Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibManage.ViewModels", "LibManage.ViewModels\LibManage.ViewModels.csproj", "{17884941-5ACF-4DFC-B49D-9864123AB366}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F8253CE1-601E-4F4F-B800-69F2E4DAABB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libmanage.Services.Test", "Libmanage.Services.Test\Libmanage.Services.Test.csproj", "{BDC9E837-2EAA-474F-BF72-3E50035B9B0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +57,10 @@ Global
 		{17884941-5ACF-4DFC-B49D-9864123AB366}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17884941-5ACF-4DFC-B49D-9864123AB366}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17884941-5ACF-4DFC-B49D-9864123AB366}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDC9E837-2EAA-474F-BF72-3E50035B9B0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDC9E837-2EAA-474F-BF72-3E50035B9B0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDC9E837-2EAA-474F-BF72-3E50035B9B0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDC9E837-2EAA-474F-BF72-3E50035B9B0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +72,7 @@ Global
 		{D0DD19E4-EA57-4095-BAC4-B6FD3D343BF4} = {E007D2E0-3DD3-4F94-870A-97275DD2AC31}
 		{35F219DD-18CE-44AD-BDFC-445D14BD6EAA} = {E007D2E0-3DD3-4F94-870A-97275DD2AC31}
 		{17884941-5ACF-4DFC-B49D-9864123AB366} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{BDC9E837-2EAA-474F-BF72-3E50035B9B0C} = {F8253CE1-601E-4F4F-B800-69F2E4DAABB4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C4BE44BC-C8E4-4A76-B689-07E29F44EFBF}
