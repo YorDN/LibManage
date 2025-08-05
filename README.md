@@ -33,7 +33,7 @@
 [![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?logo=chartdotjs&logoColor=fff)](#)
 [![Visual Studio](https://custom-icon-badges.demolab.com/badge/Visual%20Studio-5C2D91.svg?&logo=visualstudio&logoColor=white)](#)
 
-As mentioned **LibManage** uses ASP.NET Core MVC with .NET 8. For the database it uses SQL Server (MsSql) 2022. Authorization and authentication are done via the Microsoft.Identity systen. The frontend is mostly done with Bootstrap. On the admin pages, it utilizes the chart.js framework for displaying useful information to the admin. \
+As mentioned **LibManage** uses ASP.NET Core MVC with .NET 8. For the database it uses SQL Server (MsSql) 2022. Authorization and authentication are done via the Microsoft.Identity systen. The frontend is mostly done with Bootstrap. On the admin pages, it utilizes the chart.js framework for displaying useful information to the admin. 
 
 ### ⚠️ Requirements
 Every person who wants to work on the website should have these technologies (and tools) installed:
@@ -45,7 +45,7 @@ Every person who wants to work on the website should have these technologies (an
 ## 🟢 Installation
 LibManage doesn't require installation to work. You can visit the website from [here](http://batedan4o-001-site1.jtempurl.com/). 
 
-But if you wish to install it, the installation process is straightforward. First you have to clone the repository in your desired IDE (or as a matter of fact in your file system). From there you have to make a database and connect it via connection string in either the appsettings.json or user secrets (Refer to the [technologies](#-technology) section for requirements regarding technology). \
+But if you wish to install it, the installation process is straightforward. First you have to clone the repository in your desired IDE (or as a matter of fact in your file system). From there you have to make a database and connect it via connection string in either the appsettings.json or user secrets (Refer to the [technologies](#%EF%B8%8F-technologies) section for requirements regarding technology). \
 
 The connection string should be in the following format
 ``` bash
