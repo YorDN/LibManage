@@ -7,10 +7,10 @@
 
 [![language](https://img.shields.io/badge/language-C%23-239120)](https://learn.microsoft.com/en/dotnet/csharp/tour-of-csharp/overview)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/w/YorDN/LibManage)](https://github.com/YorDN/LibManage/commits/master/)
-![GitHub repo size](#)
-![GitHub last commit](#)
-![GitHub issues](#)
-![GitHub pull requests](#)
+[![GitHub repo size](https://img.shields.io/github/repo-size/YorDN/LibManage)](#)
+[![GitHub last commit](https://img.shields.io/github/last-commit/YorDN/LibManage)](#)
+[![GitHub issues](https://img.shields.io/github/issues/YorDN/LibManage)](#)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/YorDN/LibManage)](#)
 
 <img width="1695" height="950" alt="Screenshot_22" src="https://github.com/user-attachments/assets/2a830a3d-ea14-40a7-81b2-afa39109e5da" />
 
