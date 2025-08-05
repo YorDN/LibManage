@@ -14,4 +14,8 @@
 
 </div>
 
+## Table of Contents
+- [About](#-about)
 
+## ❓ About
+**LibManage** is a library management tool, based on the web. It is build using ASP.NET Core MVC with .NET 8 for the perpose of being final project for the SoftUni's ASP.NET Advanced course! It utilises key OOP concepts following the *Model-View-Controller* pattern. You can access the full website from [here](http://batedan4o-001-site1.jtempurl.com/) (I am sorry it is not https, have no money 😶‍🌫️)
