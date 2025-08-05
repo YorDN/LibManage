@@ -1,4 +1,5 @@
-﻿using LibManage.Data.Models.Library;
+﻿using LibManage.Data.Models.DTOs;
+using LibManage.Data.Models.Library;
 using LibManage.Services.Core;
 using LibManage.Services.Core.Contracts;
 using LibManage.ViewModels.Authors;
@@ -57,10 +58,10 @@ namespace LibManage.Web.Controllers
         }
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All([FromQuery] PublisherFilterOptions options, int page = 1, int pageSize = 10)
         {
-            IEnumerable<AllPublishersViewModel> model = await publisherService
-                .GetAllPublishersAsync();
+            PaginatedPublisherViewModel model = await publisherService
+                .GetAllPublishersAsync(options, page, pageSize);
             return View(model);
         } 
         [AllowAnonymous]

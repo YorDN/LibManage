@@ -7,7 +7,7 @@ namespace LibManage.Services.Core.Contracts
     public interface IPublisherService
     {
         public Task<bool> AddPublisherAsync(AddPublisherInputModel model);
-        public Task<IEnumerable<AllPublishersViewModel>> GetAllPublishersAsync();
+        public Task<PaginatedPublisherViewModel> GetAllPublishersAsync(PublisherFilterOptions options, int page = 1, int pageSize = 10);
         public Task<PublisherDetailsViewModel?> GetPublisherDetailsAsync(Guid id, Guid? userId = null);
         public Task<EditPublisherInputModel?> GetPublisherEditInfoAsync(Guid id);
         public Task<bool> EditPublisherAsync(EditPublisherInputModel model);

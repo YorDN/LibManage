@@ -1,5 +1,6 @@
 ﻿using LibManage.Common;
 using LibManage.Data;
+using LibManage.Data.Models.DTOs;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core;
 using LibManage.Services.Core.Contracts;
@@ -379,10 +380,10 @@ namespace Libmanage.Services.Test
         [Test]
         public async Task GetAllPublishersAsync_ReturnsEmptyList_WhenNoPublishers()
         {
-            var result = await _publisherService.GetAllPublishersAsync();
+            var result = await _publisherService.GetAllPublishersAsync(new PublisherFilterOptions());
 
             Assert.IsNotNull(result);
-            Assert.IsFalse(result.Any());
+            Assert.IsFalse(result.Publishers.Any());
         }
 
         [Test]
@@ -399,9 +400,9 @@ namespace Libmanage.Services.Test
             await _context.Publishers.AddRangeAsync(publisher1, publisher2, publisher3);
             await _context.SaveChangesAsync();
 
-            var result = await _publisherService.GetAllPublishersAsync();
+            var result = await _publisherService.GetAllPublishersAsync(new PublisherFilterOptions());
 
-            var publishers = result.ToList();
+            var publishers = result.Publishers.ToList();
             Assert.AreEqual(3, publishers.Count);
 
             Assert.AreEqual("Publisher A", publishers[0].Name);
@@ -416,14 +417,52 @@ namespace Libmanage.Services.Test
             await _context.Publishers.AddAsync(publisher);
             await _context.SaveChangesAsync();
 
-            var result = await _publisherService.GetAllPublishersAsync();
+            var result = await _publisherService.GetAllPublishersAsync(new PublisherFilterOptions());
 
-            var publisherViewModel = result.First();
+            var publisherViewModel = result.Publishers.First();
             Assert.AreEqual(publisher.Id, publisherViewModel.Id);
             Assert.AreEqual(publisher.Name, publisherViewModel.Name);
             Assert.AreEqual(publisher.LogoUrl, publisherViewModel.Photo);
         }
+        [Test]
+        public async Task GetAllPublishersAsync_ReturnsPaginatedResults()
+        {
 
+            var publishers = new List<Publisher>
+                {
+                    new Publisher { Name = "Author C", LogoUrl = "photo1.jpg" },
+                    new Publisher { Name = "Author A", LogoUrl = "photo2.jpg" },
+                    new Publisher { Name = "Author B", LogoUrl = "photo3.jpg" }
+                };
+
+            await _context.Publishers.AddRangeAsync(publishers);
+            await _context.SaveChangesAsync();
+
+            var filterOptions = new PublisherFilterOptions()
+            {
+                SearchTerm = "",
+                SortBy = "Name",
+                SortDescending = false
+            };
+
+            var result = await _publisherService.GetAllPublishersAsync(filterOptions, 1, 2);
+
+            var resultPublishers = result.Publishers.ToList();
+
+            Assert.AreEqual(2, result.TotalPages);
+            Assert.AreEqual(1, result.CurrentPage);
+
+            Assert.AreEqual(2, resultPublishers.Count);
+
+            Assert.AreEqual("Author A", resultPublishers[0].Name);
+            Assert.AreEqual("Author B", resultPublishers[1].Name);
+
+            var page2 = await _publisherService.GetAllPublishersAsync(filterOptions, 2, 2);
+            var page2Publishers = page2.Publishers.ToList();
+            Assert.AreEqual(1, page2Publishers.Count);
+            Assert.AreEqual("Author C", page2Publishers[0].Name);
+            Assert.AreEqual(2, page2.CurrentPage);
+        }
         [Test]
         public async Task GetDeletePublisherInfoAsync_ReturnsNull_WhenPublisherNotFound()
         {

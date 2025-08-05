@@ -1,7 +1,9 @@
 ﻿using LibManage.Common;
 using LibManage.Data;
+using LibManage.Data.Models.DTOs;
 using LibManage.Data.Models.Library;
 using LibManage.Services.Core.Contracts;
+using LibManage.ViewModels.Authors;
 using LibManage.ViewModels.Books;
 using LibManage.ViewModels.Publishers;
 
@@ -100,19 +102,45 @@ namespace LibManage.Services.Core
             return true;
         }
 
-        public async Task<IEnumerable<AllPublishersViewModel>> GetAllPublishersAsync()
+        public async Task<PaginatedPublisherViewModel> GetAllPublishersAsync(PublisherFilterOptions options, int page = 1, int pageSize = 10)
         {
-            IEnumerable<AllPublishersViewModel> publishers = await context.Publishers
-                .OrderBy(p => p.Books.Count)
-                .ThenBy(p => p.Name)
-                .Select(p => new AllPublishersViewModel()
+            var query = context.Publishers
+                 .Include(a => a.Books)
+                 .AsNoTracking()
+                 .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(options.SearchTerm))
+                query = query.Where(b =>
+                    b.Name.Contains(options.SearchTerm)
+                    || b.Books.Any(b => b.Title.Contains(options.SearchTerm)));
+
+            query = options.SortBy switch
+            {
+                "Name" => options.SortDescending ? query.OrderByDescending(b => b.Name) : query.OrderBy(b => b.Name),
+                "Books Published" => options.SortDescending
+                    ? query.OrderByDescending(b => b.Books.Count())
+                    : query.OrderBy(b => b.Books.Count()),
+                _ => query.OrderBy(b => b.Name)
+            };
+
+            int totalPublishers = await query.CountAsync();
+            var publishers = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(a => new AllPublishersViewModel
                 {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Photo = p.LogoUrl,
-                })
-                .ToListAsync();
-            return publishers;
+                    Id = a.Id,
+                    Name = a.Name,
+                    Photo = a.LogoUrl,
+                }).ToListAsync();
+
+            return new PaginatedPublisherViewModel
+            {
+                Publishers = publishers,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalPublishers / (double)pageSize),
+                FilterOptions = options
+            };
         }
 
         public async Task<DeletePublisherViewModel?> GetDeletePublisherInfoAsync(Guid id)
