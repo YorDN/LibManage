@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LibManage.Common\LibManage.Common.csproj" />
     <ProjectReference Include="..\LibManage.Data.Models\LibManage.Data.Models.csproj" />
   </ItemGroup>
 
