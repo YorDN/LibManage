@@ -1,7 +1,7 @@
 
 <div align="center">
   
-![Logo](https://github.com/YorDN/LibManage/blob/master/LibManage%20Logo-med.png?raw=true)
+[![Logo](https://github.com/YorDN/LibManage/blob/master/LibManage%20Logo-med.png?raw=true)](http://batedan4o-001-site1.jtempurl.com/)
 
   ## Your personal digital library — *organized, social, and easy to use!*
 
