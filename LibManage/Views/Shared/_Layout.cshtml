@@ -22,10 +22,20 @@
 
 </head>
 <body>
+    <style>
+        .libmanage-logo-text {
+            font-family: 'LibManageFont', sans-serif;
+            background: linear-gradient(45deg, rgba(255, 97, 97, 1), rgba(215, 189, 41, 0.8), rgba(111, 211, 127, 0.9), rgba(33, 99, 222, 1));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LibManage</a>
+                <a class="navbar-brand libmanage-logo-text" asp-area="" asp-controller="Home" asp-action="Index">LibManage</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

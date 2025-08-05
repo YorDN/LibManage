@@ -20,3 +20,9 @@ html {
 body {
   margin-bottom: 60px;
 }
+@font-face {
+    font-family: 'LibManageFont';
+    src: url('/fonts/Recoleta-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}

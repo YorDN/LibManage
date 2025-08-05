@@ -6,7 +6,10 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
-                <h1 class="display-4 fw-bold">Welcome to <span class="text-primary">LibManage</span></h1>
+                <h1 class="display-4 fw-bold d-flex align-items-center justify-content-center justify-content-lg-start">
+                    Welcome to <span class="ms-3 libmanage-logo-text ">LibManage</span>
+                </h1>
+
                 <p class="lead mb-4">Your personal digital library — organized, social, and easy to use.</p>
                 <div class="d-flex justify-content-center justify-content-lg-start">
                     <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg me-3">Log In</a>
@@ -126,3 +129,13 @@
         </a>
     </div>
 </section>
+<style>
+    .libmanage-logo-text{
+        font-family: 'LibManageFont', sans-serif;
+        background: linear-gradient(45deg, rgba(255, 97, 97, 0.9) 15%, rgba(215, 189, 41, 0.8), rgba(111, 211, 127, 0.9), rgba(33, 99, 222, 1));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+    }
+</style>
