@@ -11,6 +11,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/YorDN/LibManage)](#)
 [![GitHub issues](https://img.shields.io/github/issues/YorDN/LibManage)](#)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/YorDN/LibManage)](#)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 <img width="1695" height="950" alt="Screenshot_22" src="https://github.com/user-attachments/assets/2a830a3d-ea14-40a7-81b2-afa39109e5da" />
 
@@ -29,6 +30,12 @@
   - [Requirements](#%EF%B8%8F-requirements)
 - [Installation](#-installation)
   - [Seeded data](#-seeded-data)
+- [Project Structure](#-project-structure)
+- [Usage](#-usage)
+  - [User](#-user)
+  - [Manager](#-manager)
+  - [Admin](#-admin)
+- [License](#-license)
 
 ## ❓ About
 **LibManage** is a library management tool, based on the web. It is build using ASP.NET Core MVC with .NET 8 for the perpose of being final project for the SoftUni's ASP.NET Advanced course! It utilises key OOP concepts following the *Model-View-Controller* pattern. You can access the full website from [here](http://batedan4o-001-site1.jtempurl.com/) (I am sorry it is not https, have no money 😶‍🌫️)
@@ -88,9 +95,14 @@ Every person who wants to work on the website should have these technologies (an
 - IDE, supporting the .NET Framework (Prefferably Microsoft Visual Studio or JetBrains Rider)
 
 ## 🟢 Installation
-LibManage doesn't require installation to work. You can visit the website from [here](http://batedan4o-001-site1.jtempurl.com/). 
+> [!IMPORTANT]
+> There are some minimal requirements to run the website on your local machine! \
+> Refer to the [technologies](#%EF%B8%8F-technologies) section for requirements regarding technology.
 
-But if you wish to install it, the installation process is straightforward. First you have to clone the repository in your desired IDE (or as a matter of fact in your file system). From there you have to make a database and connect it via connection string in either the appsettings.json or user secrets (Refer to the [technologies](#%EF%B8%8F-technologies) section for requirements regarding technology). 
+> [!NOTE]
+> LibManage doesn't require installation to work. You can visit the website from [here](http://batedan4o-001-site1.jtempurl.com/). 
+
+The installation process is straightforward. First you have to clone the repository in your desired IDE (or as a matter of fact in your file system). From there you have to make a database and connect it via connection string in either the appsettings.json or user secrets. 
 
 The connection string should be in the following format
 ``` bash
@@ -111,3 +123,47 @@ Upon successful startup the database will fill with the following data:
   Including *Zahari Stoyanov* and *Pleiad*
 - **3 books** 📚 \
   Including "The Iron Candlestick" (Железният светилник), "The Volunteers at Shipka" (Опълченците на Шипка) and "The Dark Tower: The Gunslinger" (Тъмната кула 1: Стрелецът). Each of them representing the *three different types of books* available in the library: physical, digital and audio. Please refer to the [features](#-features) section for more information.
+- **3 users with 3 roles** - refer to the [usage](#-usage) ssection for more details
+## 📁 Project Structure
+The project follows very basic and easy to use structure. Here is the general structure of the project and its purpose:
+
+| Folder           | Description                             |
+|------------------|-----------------------------------------|
+| `LibManage.Common` | Enumerations and other common models            |
+| `LibManage.Data` | DbContext and DbSeeder            |
+| `LibManage.Data.Models` | Models and DTOs            |
+| `LibManage.Services.Core` | Business logic and helper services   |
+| `LibManage.Tests` | Unit tests for the application   |
+| `LibManage.Web`  | Main web project with controllers, views |
+| `LibManage.ViewModels`  | ViewModels for the views |
+| `wwwroot`        | Static files like covers, pfps, book files etc.       |
+
+## 📊 Usage
+To experience the whole website there is pre-seeded data (refer to the llast section for exact data). Along with this data there is 3 accounts, each with a different role. Here is the login information for each of them.
+### 👤 User
+|              |               |
+| ------------ | ------------- |
+| **Role**     | User          |
+| **Email**    | `user@abv.bg` |
+| **Password** | `User1234`    |
+### 👨‍💼 Manager
+|              |                  |
+| ------------ | ---------------- |
+| **Role**     | Manager          |
+| **Email**    | `manager@abv.bg` |
+| **Password** | `Manager123`     |
+### 👑 Admin
+|              |                |
+| ------------ | -------------- |
+| **Role**     | Admin          |
+| **Email**    | `admin@abv.bg` |
+| **Password** | `Admin123`     |
+
+## 📄 License
+This project is licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.
+
+---
+
+> 💬 Created with passion as a graduation project at [SoftUni](https://softuni.bg/).
+> 
+> 🧑‍💻 Built by [Yordan](https://github.com/YorDN) — feel free to reach out or fork the project!
