@@ -18,6 +18,13 @@
 
 ## Table of Contents
 - [About](#-about)
+- [Features](#-features)
+  - [Renting](#-renting)
+  - [Reading](#-reading)
+  - [Listening](#-listening)
+  - [Reviewing](#-reviewing)
+  - [Admin Features](#-admin-features)
+  - [Manager Features](#-manager-features)
 - [Technologies Used](#%EF%B8%8F-technologies)
   - [Requirements](#%EF%B8%8F-requirements)
 - [Installation](#-installation)
@@ -38,7 +45,7 @@ Once a user borrows a book (refer to the [renting](#-renting) section) and if th
 
 ![2025-08-0613-04-45-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/c27c462c-b9a5-4d69-b87d-53a00cf3d604)
 
-### 🔊 Listenting
+### 🔊 Listening
 Simular to [reading](#-reading), once borrowed, audio books can be listened to by their borrowers. The audio books are stored in .MP3 format. 
 ### ⭐ Reviewing
 Every user can review a book. The reviews are star based from 1-5 and consist of rating and user comment. Uppon successfully writing a review, the review will be moderated by one of the managers. If the review has harmful messages or hateful speech, the review will not be approved. One user can leave only one review per book (this is done for the perpose of avoiding spam). If the user's review is not approved by a manager only the user (and the manager) will see it. If the manager deletes the user's review, the review will be lost and the user will have the ability to leave a new one. Approved reviews are publically vissable and are calculated for the book's average rating. 
@@ -52,10 +59,19 @@ Along with the upper mentioned features, admins have a whole different set of ca
 - Adding/Editing/Deleting Publishers
 - Have access to the admin dashboard, containing useful info about the library
 - Assign roles and delete (deactivate) users.
+  
 ![2025-08-0612-58-46-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/3f2aa714-2d7c-4a1e-a276-4819021cfd76)
 
+### 👨‍💼 Manager Features
+Managers have a lot of the same functions as the admins, but also add their own. These include:
+- Adding/Editing/Deleting Books
+- Adding/Editing/Deleting Authors
+- Adding/Editing/Deleting Publishers
+- Moderating reviews
 
+![2025-08-0613-27-30-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/2500d926-cb58-4638-88f3-061f1914ae95)
 ## ⚙️ Technologies
+
 [![Microsoft SQL Server](https://custom-icon-badges.demolab.com/badge/Microsoft%20SQL%20Server-CC2927?logo=mssqlserver-white&logoColor=white)](#)
 [![.NET](https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=fff)](#)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?logo=bootstrap&logoColor=fff)](#)
@@ -74,7 +90,7 @@ Every person who wants to work on the website should have these technologies (an
 ## 🟢 Installation
 LibManage doesn't require installation to work. You can visit the website from [here](http://batedan4o-001-site1.jtempurl.com/). 
 
-But if you wish to install it, the installation process is straightforward. First you have to clone the repository in your desired IDE (or as a matter of fact in your file system). From there you have to make a database and connect it via connection string in either the appsettings.json or user secrets (Refer to the [technologies](#%EF%B8%8F-technologies) section for requirements regarding technology). \
+But if you wish to install it, the installation process is straightforward. First you have to clone the repository in your desired IDE (or as a matter of fact in your file system). From there you have to make a database and connect it via connection string in either the appsettings.json or user secrets (Refer to the [technologies](#%EF%B8%8F-technologies) section for requirements regarding technology). 
 
 The connection string should be in the following format
 ``` bash
@@ -84,7 +100,7 @@ The connection string should be in the following format
 ```
 or if you have a different setup, refer to [this](https://www.connectionstrings.com/sql-server/) website 
 
-From then you only have to start the application. The DbSeeder class will handle the migration/seeding of the database. 
+From there you only have to start the application. The DbSeeder class will handle the migration/seeding of the database. 
 
 ### 📃 Seeded data
 
